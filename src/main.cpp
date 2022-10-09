@@ -1,4 +1,5 @@
-// почти все компоненты
+#include <Arduino.h>
+
 
 #define AP_SSID "Bikar6"
 #define AP_PASS "htdjkzwbz1917"
@@ -6,166 +7,83 @@
 #include <GyverPortal.h>
 GyverPortal portal;
 
-bool valCheck;
-bool valSwitch;
-String valText = "Hello";
-int valNum=123;
+#define RELAY 12 // D6
+
+#include "vars.h"       // Список переменных
+#include "ds18b20.h"    // в этом файле работа с датчиком ds18b20
+#include "relay.h"      // в этом файле работа с реле
+#include "timing.h"
+#include "led7seg.h"
+
+boolean t1d1, t1d2, t1d3, t1d4, t1d5, t1d6=true, t1d7=true;
+boolean feed1ch=true;
+boolean feed2ch;
+boolean valSwitch;
+String valNTPs="ntp5.stratum2.ru";
+int valTZ=2;
 float valFloat=3.14;
-char valPass[10];
-float valSpin=3;
-int valSlider=5;
-GPdate valDate;
-GPtime valTime;
+//char valPass[10];
+int impuls=300;
+int valNTPreq=30;
+int prg=27;
+int gsr=1;
+// GPdate valDate;
+GPtime Timer1start;
+GPtime Timer1stop;
+int days1=0;
+int rt1=0;
+uint8_t week_t1=63;
+GPtime Timer2start;
+GPtime Timer2stop;
+int days2=0;
+int rt2=1;
+uint8_t week_t2=63;
+GPtime feed1start, feed2start;
 GPcolor valCol;
 int valSelect;
+//float valSpin;
+boolean eff_clock=true;
+int time_view=12;
+int data_view=5;
+int eff_speed=25;
 
-void build() {
-  GP.BUILD_BEGIN();
-  GP.THEME(GP_DARK);
-  //GP.THEME(GP_LIGHT);
+#include "interface.h"
+#include "actions.h"
 
-  GP.TITLE("AquaTimer");
-  GP.HR();
-
-  GP.NAV_TABS_LINKS("/,/home,/sett,/kek", "Home,Settings,Kek");
-  
-  GP_MAKE_SPOILER(
-    "Spoiler",
-    GP.LABEL("Hello!");
-  );
-
-  GP_MAKE_BLOCK(
-    GP.LABEL("Checks & LED");
-    GP.BREAK();
-    GP.LABEL_BLOCK("label block");
-    GP.LED("");
-    GP.CHECK("ch", valCheck);
-    GP.SWITCH("sw", valSwitch);
-  );
-
-  GP_MAKE_BLOCK_TAB(
-    "Block Tab",
-    GP.LABEL("Inputs");
-    GP_MAKE_BOX(GP.LABEL("Number");   GP.NUMBER("num", "number", valNum);     );
-    GP_MAKE_BOX(GP.LABEL("Float");    GP.NUMBER_F("numf", "numf", valFloat);  );
-    GP_MAKE_BOX(GP.LABEL("Text");     GP.TEXT("txt", "text", valText);   );
-    GP_MAKE_BOX(GP.LABEL("Password"); GP.PASS("pass", "pass", valPass);    );
-    GP.AREA("", 3, "Text area");
-  );
-
-  GP_MAKE_BLOCK_THIN(
-    GP_MAKE_BOX(GP.LABEL("Date");   GP.DATE("date", valDate);  );
-    GP_MAKE_BOX(GP.LABEL("Time");   GP.TIME("time", valTime);  );
-    GP_MAKE_BOX(GP.LABEL("Color");  GP.COLOR("col", valCol); );
-  );
-
-  GP_MAKE_BLOCK_THIN_TAB(
-    "Thin Tab",
-    GP.LABEL("Upload File/Folder");
-    GP_MAKE_BOX(
-      GP_CENTER,
-      GP.FILE_UPLOAD("");
-      GP.FOLDER_UPLOAD("");
-    );
-  );
-
-  GP_MAKE_BOX(GP.LABEL("Select");   GP.SELECT("sel", "Some,Drop,List", valSelect);  );
-  GP_MAKE_BOX(GP.LABEL("Slider");   GP.SLIDER("sld", valSlider, 0, 10);  );
-  GP_MAKE_BOX(GP.LABEL("Spinner");  GP.SPINNER("spn", valSpin); );
-
-  GP.BUTTON("btn", "Button");
-  // GP.BUTTON_MINI("", "Btn Mini");
-
-  GP.BUILD_END();
-}
-
-void action() {
-  // был клик по компоненту
-  if (portal.click()) {
-    // проверяем компоненты и обновляем переменные
-    
-    // 1. переписали вручную
-    if (portal.click("ch")) {
-      valCheck = portal.getBool("ch");
-      Serial.print("Check: ");
-      Serial.println(valCheck);
-    }
-
-    // 2. автоматическое обновление переменной
-    if (portal.clickBool("sw", valSwitch)) {
-      Serial.print("Switch: ");
-      Serial.println(valSwitch);
-    }
-
-    if (portal.clickString("txt", valText)) {
-      Serial.print("Text: ");
-      Serial.println(valText);
-    }
-
-    if (portal.clickInt("num", valNum)) {
-      Serial.print("Number: ");
-      Serial.println(valNum);
-    }
-
-    if (portal.clickFloat("fnum", valFloat)) {
-      Serial.print("Float: ");
-      Serial.println(valFloat);
-    }
-
-    if (portal.clickStr("pass", valPass)) {
-      Serial.print("Password: ");
-      Serial.println(valPass);
-    }
-
-    if (portal.clickFloat("spn", valSpin)) {
-      Serial.print("Spinner: ");
-      Serial.println(valSpin);
-    }
-
-    if (portal.clickInt("sld", valSlider)) {
-      Serial.print("Slider: ");
-      Serial.println(valSlider);
-    }
-
-    if (portal.clickDate("date", valDate)) {
-      Serial.print("Date: ");
-      Serial.println(valDate.encode());
-      Serial.println(valDate.day );
-    }
-
-    if (portal.clickTime("time", valTime)) {
-      Serial.print("Time: ");
-      Serial.println(valTime.encode());
-      Serial.println(valTime.hour);
-    }
-
-    if (portal.clickColor("col", valCol)) {
-      Serial.print("Color: ");
-      Serial.println(valCol.encode());
-    }
-
-    if (portal.clickInt("sel", valSelect)) {
-      Serial.print("Select: ");
-      Serial.println(valSelect);
-    }
-
-    if (portal.click("btn")) Serial.println("Button click");
-    if (portal.clickUp("btn")) Serial.println("Button up");
-    if (portal.clickDown("btn")) Serial.println("Button down");
-  }
-}
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("LED start");
+	lc.shutdown(0, false); // Initialize LCD
+	lc.setIntensity(0, .7); // Set the brightness to a low value
+	lc.clearDisplay(0); // and clear the display
+  configModeCallback();
   Serial.println("WiFi start");
+  ShowConnect();
   WiFi.mode(WIFI_STA);
   WiFi.begin(AP_SSID, AP_PASS);
   Serial.println("AP connect");
+  Timer1start.hour = 9;
+  Timer1start.minute = 30;
+  Timer1stop.hour = 20;
+  Timer1stop.minute = 30;
+  Timer2start.hour = 16;
+  Timer2start.minute = 15;
+  Timer2stop.hour = 18;
+  Timer2stop.minute = 40;
+  feed1start.hour = 11;
+  feed1start.minute = 20;
+  feed2start.hour = 18;
+  feed2start.minute = 45;
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println(WiFi.localIP());
+  if (WiFi.isConnected()) {
+    Serial.print(F("\nАдрес управления: "));
+    Serial.println(WiFi.localIP());
+    IP_Show();
+  }
 
   // подключаем конструктор и запускаем
   portal.attachBuild(build);
@@ -175,4 +93,15 @@ void setup() {
 
 void loop() {
   portal.tick();
+  ds_handle(ds_int); // цикл замера температуры ds18b20
+	if (time_setup) {
+		time_set = update_handle(NTP_req * 60);
+	} else {
+		if (DBG) Serial.println("Первичный запрос NTP");
+    time_set = update_handle(5);
+    if (time_set) time_setup = true;
+	}
+	date_handle(YearTime * 1000);
+	if (!YearShow) time_handle();
+	relay();
 }
