@@ -5,7 +5,7 @@ float tem; // тут храним температуру
 float p_tem=26; // температура включения реле
 float h_tem=1; // гистерезис
 String mode = "TMR"; // режим работы по температуре/ручной ("TEM"/"MAN/TMR")
-String ntp_srv="ntp5.stratum2.ru";
+String ntp_srv="ntp6.ntp-servers.net";
 int tz=2;
 boolean ch1_on;
 boolean ch2_on;
@@ -23,4 +23,4 @@ boolean time_set=false;
 String temp;
 float led_intens;
 
-boolean DBG = false;
+boolean DBG = true;

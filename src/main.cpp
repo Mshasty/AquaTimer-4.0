@@ -52,8 +52,9 @@ int eff_speed=25;
 
 
 void setup() {
+  // delay(1000);
   Serial.begin(115200);
-  Serial.println("LED start");
+  Serial.println("\nLED start");
 	lc.shutdown(0, false); // Initialize LCD
 	lc.setIntensity(0, .7); // Set the brightness to a low value
 	lc.clearDisplay(0); // and clear the display

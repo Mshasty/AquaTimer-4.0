@@ -3,7 +3,7 @@ void build() {
   GP.THEME(GP_DARK);
   //GP.THEME(GP_LIGHT);
 
-  String s="temp,";
+  String s;
   // формируем список для UPDATE
   // вида "lbl/0,lbl/1..."
   for (int i = 0; i < 5; i++) {
@@ -11,14 +11,12 @@ void build() {
     s += i;
     s += ',';
   }
-  for (int i = 0; i < 5; i++) {
-    s += "lbl/";
-    s += i;
-    s += ',';
-  }
+  s += "temp";
   GP.UPDATE(s);
-  Serial.print("Строка обновления: ");
-  Serial.println(s);
+  if (DBG) {
+    Serial.print("Строка обновления: ");
+    Serial.println(s);
+  }
 
   GP.TITLE("AquaTimer 4.0");
   GP.HR();
@@ -87,22 +85,27 @@ void build() {
 
     GP_MAKE_BLOCK_TAB(
       "Термостат",
-      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("led1", "#"); GP.TEXT("temp", "Датчик", temp); GP.LED("led2"); );
+      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("led1", 1); GP.TEXT("temp", "Датчик", temp); GP.LED("led2", 0); );
+      //GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("led1", "#"); GP.LABEL_BLOCK("temp", "ttt"); GP.LED("led2"); );
       GP_MAKE_BOX(GP.LABEL("Порог:");   GP.SLIDER("prg", prg, 15, 39);  );
       GP_MAKE_BOX(GP.LABEL("Гистерезис:");   GP.SLIDER("gsr", gsr, 0, 15);  );
+    );
+    
+    GP_MAKE_BLOCK_TAB(
+      "Блок реле",
       GP_MAKE_BOX(GP.LABEL("Режим реле 1:");   GP.SELECT("sel", "Таймер 1,Температура,Ручной", valSelect);  );
       GP_MAKE_BOX(GP.LABEL("Ручное управление:"); GP.SWITCH("sw", valSwitch); );
       GP_MAKE_BOX(GP.LABEL("Статус реле:");
         // создаём лейблы с именами led/0,led/1...
         for (int i = 0; i < 5; i++) {
-          GP.LED(String("led/") + i);
+          GP.LED(String("led/") + i, "#");
         }
       );
     );
-    for (int i = 0; i < 5; i++) {
-      GP.LABEL_BLOCK(String(i), String("lbl/") + i);
-      GP.BREAK();
-    }
+    // for (int i = 0; i < 5; i++) {
+    //   GP.LABEL_BLOCK(String(i), String("lbl/") + i);
+    //   GP.BREAK();
+    // }
 
     GP_MAKE_BLOCK_TAB(
       "Кормление",

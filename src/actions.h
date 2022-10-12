@@ -124,21 +124,18 @@ void action() {
   }
 
   if (portal.update()) {
-    portal.updateString("temp", temp);
+    //portal.updateString("temp", temp);
+    if (portal.update("temp")) portal.answer(String(ds_tem, 2) + "°С");
 
-    if (portal.updateSub("led")) {   // начинается с led
-      int ss;
-      ss = random(1);
-      if (ss) portal.answer("#");
-      else portal.answer("");
-    }
+
+    if (portal.updateSub("led")) portal.answer(random(2));
     if (portal.updateSub("lbl")) {   // начинается с lbl
       // формируем ответ вида "lbl #0: 123"
       String s;
       s += "lbl #";
       s += portal.updateNameSub(1);
       s += ":";
-      s += random(10);
+      s += random(2);
       portal.answer(s);
     }
   }
