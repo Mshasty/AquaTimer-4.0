@@ -17,14 +17,16 @@ void relay(){
   if(i + 1000 > millis()) return;
   i = millis();
   tem = ds_tem;
-  if (mode == "TEM"){
-    if (tem > p_tem + ( h_tem / 2)){
-      relayState(RELAY, false, "relay");
-    }
-    if (tem < p_tem - ( h_tem / 2)){
-      relayState(RELAY, true, "relay");
-    }
+  
+  if (tem > p_tem + ( h_tem / 2)){
+    if (mode == "TEM") relayState(RELAY, true, "relay");
+    tempOK = true;
   }
+  if (tem < p_tem - ( h_tem / 2)){
+    if (mode == "TEM") relayState(RELAY, false, "relay");
+    tempOK = false;
+  }
+  
   if (mode == "MAN") {
     relayState(RELAY, relay_on, "relay");
   }

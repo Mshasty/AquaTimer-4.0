@@ -22,5 +22,6 @@ boolean ntp_setup=false;
 boolean time_set=false;
 String temp;
 float led_intens;
+boolean tempOK = true;
 
-boolean DBG = true;
+boolean DBG = true; // Переменная для дебаг-сообщений

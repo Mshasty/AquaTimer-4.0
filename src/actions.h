@@ -77,6 +77,12 @@ void action() {
       Serial.println(impuls);
     }
 
+    if (portal.clickInt("eff_speed", eff_speed)) {
+      Serial.print("***Slider. Задержка эффекта перед часами: ");
+      Serial.println(eff_speed);
+      td = eff_speed;
+    }
+
     if (portal.clickInt("led_light", led_light)) {
       Serial.print("***Slider. Яркость LED, %: ");
       Serial.println(led_light);
@@ -96,10 +102,10 @@ void action() {
       Serial.println(Timer1start.hour);
     }
 
-    if (portal.clickColor("col", valCol)) {
-      Serial.print("Color: ");
-      Serial.println(valCol.encode());
-    }
+    // if (portal.clickColor("col", valCol)) {
+    //   Serial.print("Color: ");
+    //   Serial.println(valCol.encode());
+    // }
 
     if (portal.clickInt("sel", valSelect)) {
       Serial.print("Режим работы реле 1: ");
@@ -129,6 +135,8 @@ void action() {
 
 
     if (portal.updateSub("led")) portal.answer(random(2));
+      if (portal.updateSub("ldt1")) portal.answer(tempOK);
+      if (portal.updateSub("ldt2")) portal.answer(!tempOK);
     if (portal.updateSub("lbl")) {   // начинается с lbl
       // формируем ответ вида "lbl #0: 123"
       String s;

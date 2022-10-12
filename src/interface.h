@@ -11,7 +11,7 @@ void build() {
     s += i;
     s += ',';
   }
-  s += "temp";
+  s += "temp,ldt1,ldt2";
   GP.UPDATE(s);
   if (DBG) {
     Serial.print("Строка обновления: ");
@@ -44,6 +44,20 @@ void build() {
       // GP.LABEL("Период включения");
       GP_MAKE_BOX(GP.LABEL("≈˽");   GP.TIME("timer2start", Timer2start);   GP.TIME("timer2stop", Timer2stop);  );
       GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days2", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days2);  GP.LABEL("Реле"); GP.SELECT("rt2", "1,2,3,4,5", rt2); );
+    );
+
+    GP_MAKE_BLOCK_TAB(
+      "Таймер № 3",
+      // GP.LABEL("Период включения");
+      GP_MAKE_BOX(GP.LABEL("֍˽");   GP.TIME("timer3start", Timer3start);   GP.TIME("timer3stop", Timer3stop);  );
+      GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days3", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days3);  GP.LABEL("Реле"); GP.SELECT("rt3", "1,2,3,4,5", rt3); );
+    );
+
+    GP_MAKE_BLOCK_TAB(
+      "Таймер № 4",
+      // GP.LABEL("Период включения");
+      GP_MAKE_BOX(GP.LABEL("Ω˽");   GP.TIME("timer4start", Timer4start);   GP.TIME("timer4stop", Timer4stop);  );
+      GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days4", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days4);  GP.LABEL("Реле"); GP.SELECT("rt4", "1,2,3,4,5", rt4); );
     );
 
 
@@ -85,7 +99,7 @@ void build() {
 
     GP_MAKE_BLOCK_TAB(
       "Термостат",
-      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("led1", 1); GP.TEXT("temp", "Датчик", temp); GP.LED("led2", 0); );
+      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("ldt1"); GP.TEXT("temp", "Датчик", temp); GP.LED("ldt2"); );
       //GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("led1", "#"); GP.LABEL_BLOCK("temp", "ttt"); GP.LED("led2"); );
       GP_MAKE_BOX(GP.LABEL("Порог:");   GP.SLIDER("prg", prg, 15, 39);  );
       GP_MAKE_BOX(GP.LABEL("Гистерезис:");   GP.SLIDER("gsr", gsr, 0, 15);  );
@@ -116,5 +130,7 @@ void build() {
     );
 
   }
+  GP.NAV_TABS_LINKS("/,/timers,/setting", "Main,Timers,Settings");
+  
   GP.BUILD_END();
 }
