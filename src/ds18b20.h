@@ -65,7 +65,7 @@ void ds_handle(int interval)
   sensors.requestTemperatures();
   getTemperature(insideThermometer); 
   if (DBG) Serial.println("Temperature: " + String(ds_tem, 2));
-  temp = String(ds_tem, 2) + "°С";
+  //temp = String(ds_tem, 2) + "°С";
   //portal.updateString("temp", temp);
 }
 
