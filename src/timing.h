@@ -80,3 +80,8 @@ boolean update_handle(int interval) {
     }
     return ts;
 }
+
+void myDelay(uint16_t deltm) {
+  unsigned long TimeStop = deltm + millis();
+  while (millis() < TimeStop);      
+}

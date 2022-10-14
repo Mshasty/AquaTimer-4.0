@@ -38,3 +38,15 @@ static const uint8_t SCK   = PIN_SPI_SCK;
  
 #define PIN_A0 (17)
 static const uint8_t A0 = PIN_A0;
+
+// NodeMCU v3 pinout:
+// D0 (16) -- Relay4 (PWM)
+// D1 (05) -- Relay3 (PWM)
+// D2 (04) -- VibroPin (PWM)
+// D3 (00) -- Relay2 (PWM)
+// D4 (02) -- ONE_WIRE_BUS (PWM)
+// D5 (14) -- MAX7219.Clk (PWM)
+// D6 (12) -- Relay1 (PWM)
+// D7 (13) -- MAX7219.Din (PWM)
+// D8 (15) -- MAX7219.CS (PWM)
+

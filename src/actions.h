@@ -76,10 +76,10 @@ void action() {
       YearView = data_view;
     } 
 
-    if (portal.clickInt("impuls", impuls)) {
+    if (portal.clickInt("impuls", FeedDelay)) {
       if (DBG_portal) {
         Serial.print("***Slider. Длина импульса: ");
-        Serial.println(impuls);
+        Serial.println(FeedDelay);
       }
     }
 
@@ -128,6 +128,22 @@ void action() {
         }
       }
     }
+    for (uint8_t i = 0; i < 2; i++) {
+      if (portal.clickTime((String("feed_time") + i), feed_start[i])) {
+        if (DBG_portal) {
+          Serial.print((String("Кормление ") + (i + 1) + " стартует в "));
+          Serial.println(feed_start[i].encode());
+        }
+      }
+      if (portal.clickBool((String("feed_sw") + i), feed_sw[i])) {
+        // feed_sw[i] = portal.getBool((String("feed_sw") + i));
+        if (DBG_portal) {
+          Serial.print((String("Кормление ") + (i + 1)));
+          if (feed_sw[i]) Serial.println(" включено");
+          else Serial.println(" выключено");
+        }
+      }
+    }
 
     // if (portal.clickColor("col", valCol)) {
     //   Serial.print("Color: ");
@@ -148,6 +164,12 @@ void action() {
       }
     }
 
+    // Кнопки
+    if (portal.click("btn_feed")) {
+      if (DBG_portal) Serial.println("Feed button click");
+      ShowFeeding();
+    }
+
     if (portal.click("btn")) {
       if (DBG_portal) Serial.println("Reset click");
       ESP.restart();
@@ -160,10 +182,12 @@ void action() {
     //portal.updateString("temp", temp);
     if (portal.update("temp")) portal.answer(String(ds_tem, 2) + "°С");
 
+    //if (portal.update("tn")) portal.answer(String(hour())+":"+minute()+":"+second());
+    if (portal.update("tnow")) portal.answer("  " + day_week(weekday()) + " " + lz(day()) + "." + lz(month()) + "." + lz(year()-2000) + " " + lz(hour()) + ":" + lz(minute()) );
 
     if (portal.updateSub("led")) portal.answer(random(2));
-      if (portal.updateSub("ldt1")) portal.answer(tempOK);
-      if (portal.updateSub("ldt2")) portal.answer(!tempOK);
+    if (portal.updateSub("ldt1")) portal.answer(tempOK);
+    if (portal.updateSub("ldt2")) portal.answer(!tempOK);
     if (portal.updateSub("lbl")) {   // начинается с lbl
       // формируем ответ вида "lbl #0: 123"
       String s;

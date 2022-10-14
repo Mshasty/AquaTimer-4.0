@@ -9,11 +9,7 @@ void relayState(int pin, boolean state, String id){
 
 void relay(){
   static unsigned long i;
-  static boolean st = false;
-  if(!st){
-    st = true;
-    pinMode(RELAY, OUTPUT);
-  }
+  
   if(i + 1000 > millis()) return;
   i = millis();
   tem = ds_tem;

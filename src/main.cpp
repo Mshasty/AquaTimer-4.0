@@ -8,8 +8,12 @@
 GyverPortal portal;
 
 #define RELAY 12 // D6
+#define VibroPin 4 // D2 Pins for vibro-motor
+#define BACKLIGHT_DAY 70  // Backlight for day
+#define BACKLIGHT_NIGHT 10 // Backlight for night
 
 #include "vars.h"       // Список переменных
+// #include "pins.h"
 #include "ds18b20.h"    // в этом файле работа с датчиком ds18b20
 #include "relay.h"      // в этом файле работа с реле
 #include "timing.h"
@@ -20,6 +24,7 @@ GyverPortal portal;
 
 void setup() {
   // delay(1000);
+  pins_set();
   Serial.begin(115200);
   Serial.println("\nLED start");
 	lc.shutdown(0, false); // Initialize LCD

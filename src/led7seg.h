@@ -12,7 +12,7 @@ int inPin = 3;
 //For ESP-07 Tested GPIO Values
 // GPIO 13 = DIN pin, GPIO 12 = CLK pin, GPIO 14 = LOAD pin. 
 //For ESP-12E Tested GPIO Values
-// GPIO 13 = DIN pin, GPIO 14 = CLK pin, GPIO 15 = LOAD pin. 
+// GPIO 13 (D7) = DIN pin, GPIO 14 (D5) = CLK pin, GPIO 15 (D8) = LOAD pin. 
 LedControl lc = LedControl(13, 14, 15, 1);
 // the GPIO number For The "Reset" Push Button Switch Pin For ESp-07 Tested
 //int inPin = 5;
@@ -194,6 +194,30 @@ void ShowConnect() {
   lc.setChar(0, 0, ' ', false);
   delay(300);  
 }
+
+//Display <Feeding> 
+void ShowFeeding() {
+  lc.setRow(0, 7, 0x47);
+  lc.setRow(0, 6, 0x4f);
+  lc.setRow(0, 5, 0x4f);
+  lc.setRow(0, 4, 0x3d);
+  lc.setRow(0, 3, 0x30);
+  lc.setRow(0, 2, 0x15);
+  lc.setRow(0, 1, 0x5e);
+  lc.setChar(0, 0, ' ', false);
+  delay(750);  
+  lc.clearDisplay(0);
+  lc.setRow(0, 2, 0x5B);
+  if (FeedDelay > 10000) lc.setDigit(0, 6, int(FeedDelay/10000), false);
+  lc.setDigit(0, 5, int(FeedDelay/1000) % 10, true);
+  lc.setDigit(0, 4, int(FeedDelay/100) % 10, false);
+  // digitalWrite(VibroPin, HIGH);
+  delay(FeedDelay);
+  // digitalWrite(VibroPin, LOW);
+  if (FeedDelay < 750) delay(750 - FeedDelay);
+}
+
+
 
 void IP_Show() {
   uint8_t ipb[4];
