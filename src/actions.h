@@ -5,8 +5,10 @@ void action() {
     
     // Переключатели
     if (portal.clickBool("sw", valSwitch)) {
-      Serial.print("Switch: ");
-      Serial.println(valSwitch);
+      if (DBG_portal) {
+        Serial.print("Switch: ");
+        Serial.println(valSwitch);
+      }
       if (mode == "MAN") {
         relay_on = valSwitch;
         relayState(RELAY, valSwitch, "relay");
@@ -14,20 +16,26 @@ void action() {
     }
 
     if (portal.clickBool("eff_clock", eff_clock)) {
-      Serial.print("Показ эффекта перед часами: ");
-      Serial.println(eff_clock);
+      if (DBG_portal) {
+        Serial.print("Показ эффекта перед часами: ");
+        Serial.println(eff_clock);
+      }
       eff_time = eff_clock;
     }
 
     // Строки
     if (portal.clickString("ntps", valNTPs)) {
-      Serial.print("Text: ");
-      Serial.println(valNTPs);
+      if (DBG_portal) {
+        Serial.print("Text: ");
+        Serial.println(valNTPs);
+      }
     }
 
     if (portal.clickInt("tz", valTZ)) {
-      Serial.print("Number: ");
-      Serial.println(valTZ);
+      if (DBG_portal) {
+        Serial.print("Number: ");
+        Serial.println(valTZ);
+      }
     }
 
     // if (portal.clickFloat("fnum", valFloat)) {
@@ -35,76 +43,89 @@ void action() {
     //   Serial.println(valFloat);
     // }
 
-    // if (portal.clickStr("pass", valPass)) {
-    //   Serial.print("Password: ");
-    //   Serial.println(valPass);
-    // }
-
     // Слайдеры
     if (portal.clickInt("sld", valNTPreq)) {
-      Serial.print("***Slider. Частота запросов: ");
-      Serial.println(valNTPreq);
+      if (DBG_portal) {
+        Serial.print("***Slider. Частота запросов: ");
+        Serial.println(valNTPreq);
+      }
     } 
 
     if (portal.clickInt("prg", prg)) {
-      Serial.print("***Slider. Порог срабатывания реле: ");
-      Serial.print(prg);
-      Serial.println("°С");
+      if (DBG_portal) {
+        Serial.print("***Slider. Порог срабатывания реле: ");
+        Serial.print(prg);
+        Serial.println("°С");
+      }
       p_tem = prg;
     }
 
     if (portal.clickInt("time_view", time_view)) {
-      Serial.print("***Slider. Период показа времени: ");
-      Serial.println(time_view);
+      if (DBG_portal) {
+        Serial.print("***Slider. Период показа времени: ");
+        Serial.println(time_view);
+      }
       YearTime = time_view;
     } 
 
     if (portal.clickInt("data_view", data_view)) {
-      Serial.print("***Slider. Период показа данных: ");
-      Serial.println(data_view);
+      if (DBG_portal) {
+        Serial.print("***Slider. Период показа данных: ");
+        Serial.println(data_view);
+      }
       YearView = data_view;
     } 
 
     if (portal.clickInt("impuls", impuls)) {
-      Serial.print("***Slider. Длина импульса: ");
-      Serial.println(impuls);
+      if (DBG_portal) {
+        Serial.print("***Slider. Длина импульса: ");
+        Serial.println(impuls);
+      }
     }
 
     if (portal.clickInt("eff_speed", eff_speed)) {
-      Serial.print("***Slider. Задержка эффекта перед часами: ");
-      Serial.println(eff_speed);
+      if (DBG_portal) {
+        Serial.print("***Slider. Задержка эффекта перед часами: ");
+        Serial.println(eff_speed);
+      }
       td = eff_speed;
     }
 
     if (portal.clickInt("led_light", led_light)) {
-      Serial.print("***Slider. Яркость LED, %: ");
-      Serial.println(led_light);
+      if (DBG_portal) {
+        Serial.print("***Slider. Яркость LED, %: ");
+        Serial.println(led_light);
+      }
       led_intens = led_light/100;
       lc.setIntensity(0, led_intens);
     }
 
-    // if (portal.clickDate("date", Timer1start)) {
-    //   Serial.print("Date: ");
-    //   Serial.println(Timer1start.encode());
-    //   Serial.println(Timer1start.day );
-    // }
-
     // таймеры
     for (uint8_t i = 0; i < timers_num; i++) {
       if (portal.clickTime((String("tmr_start") + i), Timer_start[i])) {
-        Serial.print((String("Таймер старт №") + (i + 1) + ": "));
-        Serial.println(Timer_start[i].encode());
+        if (DBG_portal) {
+          Serial.print((String("Таймер старт №") + (i + 1) + ": "));
+          Serial.println(Timer_start[i].encode());
+        }
       }
       if (portal.clickTime((String("tmr_stop") + i), Timer_stop[i])) {
-        Serial.print((String("Таймер стоп №") + (i + 1) + ": "));
-        Serial.println(Timer_stop[i].encode());
+        if (DBG_portal) {
+          Serial.print((String("Таймер стоп №") + (i + 1) + ": "));
+          Serial.println(Timer_stop[i].encode());
+        }
       }
       if (portal.clickInt((String("tmr_days") + i), Timer_days[i])) {
         Timers_week[i] = weekday_set[Timer_days[i]];
+        if (DBG_portal) {
+          Serial.print((String("Таймер №") + (i + 1) + " роботает по дням недели "));
+          Serial.println(Timers_week[i]);
+        }
       }
       if (portal.clickInt((String("tmr_relays") + i), Timer_relay[i])) {
-        Serial.print((String("Таймер №") + (i + 1) + " теперь управляет реле "));
-        Serial.println(Timer_relay[i]+1);
+        if (DBG_portal) {
+          Serial.print((String("Таймер №") + (i + 1) + " теперь управляет реле "));
+          Serial.println(Timer_relay[i]+1);
+        }
       }
     }
 
@@ -114,21 +135,21 @@ void action() {
     // }
 
     if (portal.clickInt("sel", valSelect)) {
-      Serial.print("Режим работы реле 1: ");
+      if (DBG_portal) Serial.print("Режим работы реле 1: ");
       if (valSelect==1) {
-        Serial.println("Температура");
+        if (DBG_portal) Serial.println("Температура");
         mode = "TEM";
       } else if (valSelect==2) {
-        Serial.println("Ручной");
+        if (DBG_portal) Serial.println("Ручной");
         mode = "MAN";
       } else {
-        Serial.println("Таймер 1");
+        if (DBG_portal) Serial.println("Таймер 1");
         mode = "TMR";
       }
     }
 
     if (portal.click("btn")) {
-      Serial.println("Button click");
+      if (DBG_portal) Serial.println("Reset click");
       ESP.restart();
     }
     if (portal.clickUp("btn")) Serial.println("Button up");

@@ -50,7 +50,8 @@ int time_view=12;
 int data_view=5;
 int eff_speed=25;
 
-boolean DBG = true; // Переменная для дебаг-сообщений
+boolean DBG = false; // Переменная для дебаг-сообщений
+boolean DBG_portal = true; // Переменная для дебага портала
 
 void set_vars_start() {
   Timer_start[0].hour = 9;
