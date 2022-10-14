@@ -21,7 +21,60 @@ boolean mqtt_enable = false;
 boolean ntp_setup=false;
 boolean time_set=false;
 String temp;
-float led_intens;
+float led_intens; // яркость 7-сегм.индикатора
 boolean tempOK = true;
 
+boolean feed1ch=true;
+boolean feed2ch;
+boolean valSwitch;
+String valNTPs="ntp5.stratum2.ru";
+int valTZ=2;
+float valFloat=3.14;
+int impuls=300;
+int valNTPreq=30;
+int prg=27;
+int gsr=1;
+uint8_t timers_num = 5;
+GPtime Timer_start[10];
+GPtime Timer_stop[10];
+int Timer_days[10] = {0, 1, 2, 3, 4, 0, 1, 2, 3, 4};
+int Timer_relay[10] = {0, 1, 2, 3, 4, 0, 1, 2, 3, 4};
+uint8_t Timers_week[10];
+// weekday_set = √√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙
+uint8_t weekday_set[5] = {127, 124, 3, 85, 42};
+GPtime feed1start, feed2start;
+GPcolor valCol;
+int valSelect;
+boolean eff_clock=true;
+int time_view=12;
+int data_view=5;
+int eff_speed=25;
+
 boolean DBG = true; // Переменная для дебаг-сообщений
+
+void set_vars_start() {
+  Timer_start[0].hour = 9;
+  Timer_start[0].minute = 30;
+  Timer_stop[0].hour = 20;
+  Timer_stop[0].minute = 30;
+  Timer_start[1].hour = 16;
+  Timer_start[1].minute = 15;
+  Timer_stop[1].hour = 18;
+  Timer_stop[1].minute = 40;
+  Timer_start[2].hour = 11;
+  Timer_start[2].minute = 00;
+  Timer_stop[2].hour = 22;
+  Timer_stop[2].minute = 00;
+  Timer_start[3].hour = 15;
+  Timer_start[3].minute = 30;
+  Timer_stop[3].hour = 18;
+  Timer_stop[3].minute = 40;
+  Timer_start[4].hour = 12;
+  Timer_start[4].minute = 15;
+  Timer_stop[4].hour = 16;
+  Timer_stop[4].minute = 25;
+  feed1start.hour = 11;
+  feed1start.minute = 20;
+  feed2start.hour = 18;
+  feed2start.minute = 45;
+}

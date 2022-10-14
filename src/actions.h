@@ -3,13 +3,6 @@ void action() {
   if (portal.click()) {
     // проверяем компоненты и обновляем переменные
     
-    // 1. переписали вручную
-    if (portal.click("t1d1")) {
-      t1d1 = portal.getBool("t1d1");
-      Serial.print("Таймер №1 в понедельник : ");
-      Serial.println(t1d1);
-    }
-
     // Переключатели
     if (portal.clickBool("sw", valSwitch)) {
       Serial.print("Switch: ");
@@ -96,10 +89,23 @@ void action() {
     //   Serial.println(Timer1start.day );
     // }
 
-    if (portal.clickTime("timer1start", Timer1start)) {
-      Serial.print("Time: ");
-      Serial.println(Timer1start.encode());
-      Serial.println(Timer1start.hour);
+    // таймеры
+    for (uint8_t i = 0; i < timers_num; i++) {
+      if (portal.clickTime((String("tmr_start") + i), Timer_start[i])) {
+        Serial.print((String("Таймер старт №") + (i + 1) + ": "));
+        Serial.println(Timer_start[i].encode());
+      }
+      if (portal.clickTime((String("tmr_stop") + i), Timer_stop[i])) {
+        Serial.print((String("Таймер стоп №") + (i + 1) + ": "));
+        Serial.println(Timer_stop[i].encode());
+      }
+      if (portal.clickInt((String("tmr_days") + i), Timer_days[i])) {
+        Timers_week[i] = weekday_set[Timer_days[i]];
+      }
+      if (portal.clickInt((String("tmr_relays") + i), Timer_relay[i])) {
+        Serial.print((String("Таймер №") + (i + 1) + " теперь управляет реле "));
+        Serial.println(Timer_relay[i]+1);
+      }
     }
 
     // if (portal.clickColor("col", valCol)) {

@@ -30,35 +30,45 @@ void build() {
 
   if (portal.uri("/timers")) {  
 
-    GP_MAKE_BLOCK_TAB(
-      "Таймер № 1",
-      // GP.LABEL("Период включения");
-      GP_MAKE_BOX(GP.LABEL("☼˽");   GP.TIME("timer1start", Timer1start);   GP.TIME("timer1stop", Timer1stop);  );
-      GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days1", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days1);  GP.LABEL("Реле"); GP.SELECT("rt1", "1,2,3,4,5", rt1); );
-      //GP_MAKE_BOX(GP.LABEL("Дни недели:"); GP.CHECK("t1d1", t1d1); GP.CHECK("t1d2", t1d2); GP.CHECK("t1d3", t1d3); GP.CHECK("t1d4", t1d4); GP.CHECK("t1d5", t1d5); GP.CHECK("t1d6", t1d6); GP.CHECK("t1d7", t1d7);   );
-      // GP_MAKE_BOX(GP.LABEL("Реле таймера:"); GP.SELECT("rt1", "1,2,3,4,5", rt1);  );
-    );
+    
+    for (uint8_t i = 0; i < timers_num; i++) {
+      GP_MAKE_BLOCK_TAB(
+        (String("Таймер № ") + (i+1)),
+        // GP.LABEL("Период включения");
+        GP_MAKE_BOX(GP.LABEL("╘═╛");   GP.TIME((String("tmr_start") + i), Timer_start[i]);   GP.TIME((String("tmr_stop") + i), Timer_stop[i]);  );
+        GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT((String("tmr_days") + i), "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", Timer_days[i]);  GP.LABEL("Реле"); GP.SELECT((String("tmr_relays") + i), "1,2,3,4,5", Timer_relay[i]); );
+      );
+    }
 
-    GP_MAKE_BLOCK_TAB(
-      "Таймер № 2",
-      // GP.LABEL("Период включения");
-      GP_MAKE_BOX(GP.LABEL("≈˽");   GP.TIME("timer2start", Timer2start);   GP.TIME("timer2stop", Timer2stop);  );
-      GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days2", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days2);  GP.LABEL("Реле"); GP.SELECT("rt2", "1,2,3,4,5", rt2); );
-    );
+    // GP_MAKE_BLOCK_TAB(
+    //   "Таймер № 1",
+    //   // GP.LABEL("Период включения");
+    //   GP_MAKE_BOX(GP.LABEL("☼˽");   GP.TIME("timer1start", Timer_start[0]);   GP.TIME("timer1stop", Timer_stop[0]);  );
+    //   GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days1", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days1);  GP.LABEL("Реле"); GP.SELECT("rt1", "1,2,3,4,5", rt1); );
+    //   //GP_MAKE_BOX(GP.LABEL("Дни недели:"); GP.CHECK("t1d1", t1d1); GP.CHECK("t1d2", t1d2); GP.CHECK("t1d3", t1d3); GP.CHECK("t1d4", t1d4); GP.CHECK("t1d5", t1d5); GP.CHECK("t1d6", t1d6); GP.CHECK("t1d7", t1d7);   );
+    //   // GP_MAKE_BOX(GP.LABEL("Реле таймера:"); GP.SELECT("rt1", "1,2,3,4,5", rt1);  );
+    // );
 
-    GP_MAKE_BLOCK_TAB(
-      "Таймер № 3",
-      // GP.LABEL("Период включения");
-      GP_MAKE_BOX(GP.LABEL("֍˽");   GP.TIME("timer3start", Timer3start);   GP.TIME("timer3stop", Timer3stop);  );
-      GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days3", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days3);  GP.LABEL("Реле"); GP.SELECT("rt3", "1,2,3,4,5", rt3); );
-    );
+    // GP_MAKE_BLOCK_TAB(
+    //   "Таймер № 2",
+    //   // GP.LABEL("Период включения");
+    //   GP_MAKE_BOX(GP.LABEL("≈˽");   GP.TIME("timer2start", Timer2start);   GP.TIME("timer2stop", Timer2stop);  );
+    //   GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days2", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days2);  GP.LABEL("Реле"); GP.SELECT("rt2", "1,2,3,4,5", rt2); );
+    // );
 
-    GP_MAKE_BLOCK_TAB(
-      "Таймер № 4",
-      // GP.LABEL("Период включения");
-      GP_MAKE_BOX(GP.LABEL("Ω˽");   GP.TIME("timer4start", Timer4start);   GP.TIME("timer4stop", Timer4stop);  );
-      GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days4", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days4);  GP.LABEL("Реле"); GP.SELECT("rt4", "1,2,3,4,5", rt4); );
-    );
+    // GP_MAKE_BLOCK_TAB(
+    //   "Таймер № 3",
+    //   // GP.LABEL("Период включения");
+    //   GP_MAKE_BOX(GP.LABEL("֍˽");   GP.TIME("timer3start", Timer3start);   GP.TIME("timer3stop", Timer3stop);  );
+    //   GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days3", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days3);  GP.LABEL("Реле"); GP.SELECT("rt3", "1,2,3,4,5", rt3); );
+    // );
+
+    // GP_MAKE_BLOCK_TAB(
+    //   "Таймер № 4",
+    //   // GP.LABEL("Период включения");
+    //   GP_MAKE_BOX(GP.LABEL("Ω˽");   GP.TIME("timer4start", Timer4start);   GP.TIME("timer4stop", Timer4stop);  );
+    //   GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT("days4", "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙", days4);  GP.LABEL("Реле"); GP.SELECT("rt4", "1,2,3,4,5", rt4); );
+    // );
 
 
   } else if (portal.uri("/setting")) {
@@ -134,3 +144,5 @@ void build() {
   
   GP.BUILD_END();
 }
+
+
