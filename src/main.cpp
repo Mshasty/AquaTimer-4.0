@@ -12,14 +12,20 @@ GyverPortal portal;
 #define BACKLIGHT_DAY 70  // Backlight for day
 #define BACKLIGHT_NIGHT 10 // Backlight for night
 
+#define relay_num 4 // Количество реле
+#define timers_num 5 // количество таймеров
+
 #include "vars.h"       // Список переменных
 // #include "pins.h"
 #include "ds18b20.h"    // в этом файле работа с датчиком ds18b20
 #include "relay.h"      // в этом файле работа с реле
 #include "timing.h"
 #include "led7seg.h"
+#include "romfunc.h"
 #include "interface.h"
 #include "actions.h"
+
+
 
 
 void setup() {
@@ -31,12 +37,12 @@ void setup() {
 	lc.setIntensity(0, .7); // Set the brightness to a low value
 	lc.clearDisplay(0); // and clear the display
   configModeCallback();
+  if (!eeprom_read()) set_vars_start();
   Serial.println("WiFi start");
   ShowConnect();
   WiFi.mode(WIFI_STA);
   WiFi.begin(AP_SSID, AP_PASS);
   Serial.println("AP connect");
-  set_vars_start();
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -57,7 +63,7 @@ void loop() {
   portal.tick();
   ds_handle(ds_int); // цикл замера температуры ds18b20
 	if (time_setup) {
-		time_set = update_handle(NTP_req * 60);
+		time_set = update_handle(ntp_req * 60);
 	} else {
 		if (DBG) Serial.println("Первичный запрос NTP");
     time_set = update_handle(5);

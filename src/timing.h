@@ -76,7 +76,7 @@ boolean update_handle(int interval) {
         }
         timer = millis();
         // ntp_setup = false;
-        ts = ntp(25, ntp_srv, tz); // время NTP
+        ts = ntp(ntp_req, ntp_srv, GMT_OFF); // время NTP
     }
     return ts;
 }

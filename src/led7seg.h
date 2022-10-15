@@ -61,35 +61,35 @@ void ShowEffect() {
 }
 
 void ShowEffect2() {
-  if (eff_time) {
+  if (eff_clock) {
     lc.clearDisplay(0);
     for (uint8_t j = 7; j > 0; j--) {
       lc.setRow(0, j, 2);
       if (j<6) lc.setRow(0, j+2, 0);
-      delay(td);
+      delay(eff_speed);
       if (j<7) lc.setRow(0, j+1, 32);
       lc.setRow(0, j, 34);
-      delay(td);
+      delay(eff_speed);
     }
     lc.setRow(0, 2, 0);
     lc.setRow(0, 0, 2);
-    delay(td);
+    delay(eff_speed);
     lc.setRow(0, 0, 3);
-    delay(td);
+    delay(eff_speed);
     lc.setRow(0, 1, 0);
     lc.setRow(0, 0, 5);
-    delay(td);
+    delay(eff_speed);
     lc.setRow(0, 0, 4);
     for (uint8_t j = 1; j < 8; j++) {
       if (j>1) lc.setRow(0, j-2, 0);
       lc.setRow(0, j, 16);
-      delay(td);
+      delay(eff_speed);
       lc.setRow(0, j-1, 4);
       lc.setRow(0, j, 20);
-      delay(td);
+      delay(eff_speed);
     }
     lc.setRow(0, 6, 0);
-    delay(td);
+    delay(eff_speed);
   }
 }
 
@@ -169,7 +169,7 @@ void configModeCallback() {
   lc.setChar(0, 2, 'P', true);  // P
   lc.setChar(0, 1, ' ', true);
   lc.setChar(0, 0, ' ', true);
-  delay(800);
+  delay(500);
 }
 
 //Display <StArt>

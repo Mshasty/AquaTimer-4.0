@@ -20,21 +20,20 @@ void action() {
         Serial.print("Показ эффекта перед часами: ");
         Serial.println(eff_clock);
       }
-      eff_time = eff_clock;
     }
 
     // Строки
-    if (portal.clickString("ntps", valNTPs)) {
+    if (portal.clickStr("ntps", ntp_srv)) {
       if (DBG_portal) {
-        Serial.print("Text: ");
-        Serial.println(valNTPs);
+        Serial.print("NTP server: ");
+        Serial.println(ntp_srv);
       }
     }
 
-    if (portal.clickInt("tz", valTZ)) {
+    if (portal.clickInt("tz", GMT_OFF)) {
       if (DBG_portal) {
         Serial.print("Number: ");
-        Serial.println(valTZ);
+        Serial.println(GMT_OFF);
       }
     }
 
@@ -44,36 +43,41 @@ void action() {
     // }
 
     // Слайдеры
-    if (portal.clickInt("sld", valNTPreq)) {
+    if (portal.clickInt("sld", ntp_req)) {
       if (DBG_portal) {
         Serial.print("***Slider. Частота запросов: ");
-        Serial.println(valNTPreq);
+        Serial.println(ntp_req);
       }
     } 
 
-    if (portal.clickInt("prg", prg)) {
+    if (portal.clickInt("p_tem", p_tem)) {
       if (DBG_portal) {
         Serial.print("***Slider. Порог срабатывания реле: ");
-        Serial.print(prg);
+        Serial.print(p_tem);
         Serial.println("°С");
       }
-      p_tem = prg;
     }
 
-    if (portal.clickInt("time_view", time_view)) {
+    if (portal.clickInt("h_tem", h_tem)) {
+      if (DBG_portal) {
+        Serial.print("***Slider. Гистерезис срабатывания реле: ");
+        Serial.print(h_tem);
+        Serial.println("°С");
+      }
+    }
+
+    if (portal.clickInt("time_view", YearTime)) {
       if (DBG_portal) {
         Serial.print("***Slider. Период показа времени: ");
-        Serial.println(time_view);
+        Serial.println(YearTime);
       }
-      YearTime = time_view;
     } 
 
-    if (portal.clickInt("data_view", data_view)) {
+    if (portal.clickInt("data_view", YearView)) {
       if (DBG_portal) {
         Serial.print("***Slider. Период показа данных: ");
-        Serial.println(data_view);
+        Serial.println(YearView);
       }
-      YearView = data_view;
     } 
 
     if (portal.clickInt("impuls", FeedDelay)) {
@@ -88,7 +92,6 @@ void action() {
         Serial.print("***Slider. Задержка эффекта перед часами: ");
         Serial.println(eff_speed);
       }
-      td = eff_speed;
     }
 
     if (portal.clickInt("led_light", led_light)) {
@@ -102,44 +105,44 @@ void action() {
 
     // таймеры
     for (uint8_t i = 0; i < timers_num; i++) {
-      if (portal.clickTime((String("tmr_start") + i), Timer_start[i])) {
+      if (portal.clickTime((String("tmr_start") + i), my_timer[i].Timer_start)) {
         if (DBG_portal) {
           Serial.print((String("Таймер старт №") + (i + 1) + ": "));
-          Serial.println(Timer_start[i].encode());
+          Serial.println(my_timer[i].Timer_start.encode());
         }
       }
-      if (portal.clickTime((String("tmr_stop") + i), Timer_stop[i])) {
+      if (portal.clickTime((String("tmr_stop") + i), my_timer[i].Timer_stop)) {
         if (DBG_portal) {
           Serial.print((String("Таймер стоп №") + (i + 1) + ": "));
-          Serial.println(Timer_stop[i].encode());
+          Serial.println(my_timer[i].Timer_stop.encode());
         }
       }
-      if (portal.clickInt((String("tmr_days") + i), Timer_days[i])) {
-        Timers_week[i] = weekday_set[Timer_days[i]];
+      if (portal.clickInt((String("tmr_days") + i), my_timer[i].Timer_days)) {
+        my_timer[i].Timer_week = weekday_set[my_timer[i].Timer_days];
         if (DBG_portal) {
           Serial.print((String("Таймер №") + (i + 1) + " роботает по дням недели "));
-          Serial.println(Timers_week[i]);
+          Serial.println(my_timer[i].Timer_week);
         }
       }
-      if (portal.clickInt((String("tmr_relays") + i), Timer_relay[i])) {
+      if (portal.clickInt((String("tmr_relays") + i), my_timer[i].Timer_relay)) {
         if (DBG_portal) {
           Serial.print((String("Таймер №") + (i + 1) + " теперь управляет реле "));
-          Serial.println(Timer_relay[i]+1);
+          Serial.println(my_timer[i].Timer_relay+1);
         }
       }
     }
     for (uint8_t i = 0; i < 2; i++) {
-      if (portal.clickTime((String("feed_time") + i), feed_start[i])) {
+      if (portal.clickTime((String("feed_time") + i), Feeds[i].feed_start)) {
         if (DBG_portal) {
           Serial.print((String("Кормление ") + (i + 1) + " стартует в "));
-          Serial.println(feed_start[i].encode());
+          Serial.println(Feeds[i].feed_start.encode());
         }
       }
-      if (portal.clickBool((String("feed_sw") + i), feed_sw[i])) {
-        // feed_sw[i] = portal.getBool((String("feed_sw") + i));
+      if (portal.clickBool((String("feed_sw") + i), Feeds[i].feed_sw)) {
+        // Feeds[i].feed_sw = portal.getBool((String("feed_sw") + i));
         if (DBG_portal) {
           Serial.print((String("Кормление ") + (i + 1)));
-          if (feed_sw[i]) Serial.println(" включено");
+          if (Feeds[i].feed_sw) Serial.println(" включено");
           else Serial.println(" выключено");
         }
       }
@@ -168,8 +171,23 @@ void action() {
     if (portal.click("btn_feed")) {
       if (DBG_portal) Serial.println("Feed button click");
       ShowFeeding();
+    } 
+
+    if (portal.click("load_conf")) {
+      if (DBG_portal) Serial.println("Load button click");
+      if (eeprom_read()) {
+        if (DBG_portal) Serial.println("Конфигурация загружена");
+        //portal.start();
+        portal.show();
+      }
+      else Serial.println("Ошибка загрузки конфигурации");
     }
 
+    if (portal.click("save_conf")) {
+      if (DBG_portal) Serial.println("Конфигурация сохранена");
+      eeprom_write();
+    }
+    
     if (portal.click("btn")) {
       if (DBG_portal) Serial.println("Reset click");
       ESP.restart();

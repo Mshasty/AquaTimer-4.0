@@ -45,7 +45,7 @@ a:hover {
 }
 
 #blockBack input:checked+.slider {
-  background-color: #37a93c
+  background-color: #233d86
 }
 
 body {
@@ -201,10 +201,12 @@ input[type=button],
 button {
   height: 55px;
   font-size: 24px;
+  letter-spacing: 2px;
   width: 90%;
   max-width: 300px;
   margin: 8px 5px;
-  background-color: #4CAF50;
+  background-color: #233d86;
+  background-image: linear-gradient(105deg,#10b2ef,#233d86);
   border: none;
   border-radius: 8px;
   color: white;
@@ -371,7 +373,7 @@ input[type=range] {
   background-repeat: no-repeat;
   cursor: pointer;
   padding: 0px;
-  background-image: linear-gradient(#37a93c, #37a93c);
+  background-image: linear-gradient(#10b2ef,#233d86);
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -390,7 +392,7 @@ input[type=range]:hover {
   padding: 3px 5px;
   border-radius: 4px;
   color: #fff;
-  background: #37a93c;
+  background: #10b2ef;
   margin: 2px 3px;
 }
 
@@ -399,7 +401,8 @@ input[type=range]:hover {
   height: 40px;
   font-size: 25px;
   margin: 8px 5px;
-  background-color: #4CAF50;
+  background-color: #233d86;
+  background-image: linear-gradient(105deg,#10b2ef,#233d86);
   border: none;
   border-radius: 8px;
   color: white;
@@ -424,7 +427,7 @@ input[type=range]:hover {
   padding: 0;
   overflow: hidden;
   border-radius: 5px;
-  background: #37a93c;
+  background: #10b2ef;
 }
 
 .navtab>ul>li {
