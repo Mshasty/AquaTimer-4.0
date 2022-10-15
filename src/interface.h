@@ -32,7 +32,7 @@ void build() {
 
     
     for (uint8_t i = 0; i < timers_num; i++) {
-      GP_MAKE_BLOCK_TAB(
+      GP_MAKE_BLOCK_THIN_TAB(
         (String("Таймер № ") + (i+1)),
         // GP.LABEL("Период включения");
         GP_MAKE_BOX(GP.LABEL("╘═╛");   GP.TIME((String("tmr_start") + i), my_timer[i].Timer_start);   GP.TIME((String("tmr_stop") + i), my_timer[i].Timer_stop);  );
@@ -58,18 +58,15 @@ void build() {
 
   } else if (portal.uri("/setting")) {
     
-    GP_MAKE_BLOCK_TAB(
+    GP_MAKE_BLOCK_THIN_TAB(
       "NTP",
-      GP.LABEL("NTP-сервер");
       GP_MAKE_BOX(GP.LABEL("Server:");     GP.TEXT("ntps", "text", ntp_srv); );
       GP_MAKE_BOX(GP.LABEL("TimeZone:");   GP.NUMBER("tz", "number", GMT_OFF); );
       GP_MAKE_BOX(GP.LABEL("Период:");   GP.SLIDER("sld", ntp_req, 15, 1080, 15);  );
-      //GP_MAKE_BOX(GP.LABEL("Password"); GP.PASS("pass", "pass", valPass); );
-      //GP.AREA("", 3, "Text area");
     );
 
-    GP_MAKE_BLOCK_TAB(
-      "Clock",
+    GP_MAKE_BLOCK_THIN_TAB(
+      "Часы",
       GP_MAKE_BOX(GP.LABEL("Показ времени:");   GP.SLIDER("time_view", YearTime, 5, 45);  );
       GP_MAKE_BOX(GP.LABEL("Показ данных:");   GP.SLIDER("data_view", YearView, 3, 30);  ); 
       GP_MAKE_BOX(GP.LABEL("Яркость:");   GP.SLIDER("led_light", led_light, 10, 100, 10);  ); 
@@ -77,17 +74,15 @@ void build() {
       GP_MAKE_BOX(GP.LABEL("Эффект перед часами:"); GP.SWITCH("eff_clock", eff_clock); );
       GP_MAKE_BOX(GP.LABEL("Скорость эффекта:");   GP.SLIDER("eff_speed", eff_speed, 5, 120, 5);  );
     );
+
+    GP_MAKE_BLOCK_THIN_TAB(
+      "Реле",
+      GP_MAKE_BOX(GP.LABEL("Инверсия:"); GP.SWITCH("invrs", RelayUp); );
+    );
     
     GP_MAKE_BLOCK_THIN_TAB(
       "Конфигурация",
-      // GP.LABEL("Upload File");
-      // GP_MAKE_BOX(
-      //   GP_CENTER,
-      //   GP.FILE_UPLOAD("");
-      //   GP.FOLDER_UPLOAD("");
-      // );
       GP_MAKE_BOX(GP_CENTER, GP.BUTTON("load_conf", "Load"); GP.BUTTON("save_conf", "Save"); );
-      // GP_MAKE_BOX(GP_CENTER, GP.LABEL("Load:"); GP.FILE_UPLOAD(""); GP.LABEL("Save:"); GP.FILE_UPLOAD(""); );
     );
 
     GP.BUTTON("btn", "Reset ESP");
@@ -96,7 +91,6 @@ void build() {
     GP_MAKE_BLOCK_TAB(
       "Термостат",
       GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("ldt1"); GP.TEXT("temp", "Датчик", temp); GP.LED("ldt2"); );
-      //GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("led1", "#"); GP.LABEL_BLOCK("temp", "ttt"); GP.LED("led2"); );
       GP_MAKE_BOX(GP.LABEL("Порог:");   GP.SLIDER("p_tem", p_tem, 15, 39);  );
       GP_MAKE_BOX(GP.LABEL("Гистерезис:");   GP.SLIDER("h_tem", h_tem, 0, 15);  );
     );
@@ -107,7 +101,7 @@ void build() {
       GP_MAKE_BOX(GP.LABEL("Ручное управление:"); GP.SWITCH("sw", valSwitch); );
       GP_MAKE_BOX(GP.LABEL("Статус реле:");
         // создаём лейблы с именами led/0,led/1...
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < relay_num; i++) {
           GP.LED(String("led/") + i, "#");
         }
       );

@@ -3,9 +3,11 @@
 
 // глобальные переменные для работы с ними в программе
 static uint8_t relays[4] = {12, 0, 5, 16};
-
+boolean RelayUp = false; // инверсия реле
+boolean ChOnOff[4];
+boolean BeepOnOff = false;
 unsigned int ds_int=5; // интервал замера ds18b20 в секундах 
-unsigned int mqtt_int=30; // интервал отправки данных по MQTT в секундах 
+// unsigned int mqtt_int=30; // интервал отправки данных по MQTT в секундах 
 float tem; // тут храним температуру
 int p_tem=26; // температура включения реле
 int h_tem=1; // гистерезис
@@ -17,13 +19,12 @@ int YearTime=12; // Период показа даты
 int YearView=5;  // Время показа даты
 int led_light;
 int ntp_req=25; // Период запроса NTP-сервера
-boolean mqtt_enable = false;
+// boolean mqtt_enable = false;
 boolean ntp_setup=false;
 boolean time_set=false;
 String temp;
 float led_intens; // яркость 7-сегм.индикатора
 boolean tempOK = true;
-boolean valSwitch;
 int FeedDelay=300;
 int valNTPreq=30;
 int prg=27;
@@ -43,6 +44,7 @@ struct Feed_set {
   GPtime feed_start;
 };
 Feed_set Feeds[2];
+boolean valSwitch;
 int valSelect;
 boolean eff_clock=true; // показ эффекта перед часами
 int eff_speed = 25; // скорость эффекта перед часами

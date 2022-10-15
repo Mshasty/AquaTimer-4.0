@@ -1047,7 +1047,7 @@ struct Builder {
         send();
     }
     
-    void SLIDER(const String& name, float value = 0, float min = 0, float max = 100, float step = 1, uint8_t dec = 0, PGM_P st = GP_GREEN, bool dis = false) {
+    void SLIDER(const String& name, float value = 0, float min = 0, float max = 100, float step = 1, uint8_t dec = 0, PGM_P st = GP_SLDR, bool dis = false) {
         *_gp_page += F("<input type='range' name='");
         *_gp_page += name;
         *_gp_page += F("' id='");

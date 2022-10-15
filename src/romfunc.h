@@ -3,18 +3,20 @@
 
 struct EEPROM_Data {
   byte success;
-  unsigned int ds_int;
-  float p_tem;
-  float h_tem;
-  int valSelect;
+  unsigned int ds_int; // период опроса ds18b20
+  float p_tem; // порог срабатывания термостата
+  float h_tem; // гистерезис термостата
+  int valSelect; // режим первого реле
   uint8_t YearTime; // Период показа даты
   uint8_t YearView;  // Время показа даты
-  int led_light;
-  int gmt_off;
+  int led_light; // яркость LED-индикатора
+  int gmt_off; // Тайм-зона GMT
   int ntp_req; // Период запроса NTP-сервера
   boolean eff_clock; // показ эффекта перед часами
-  int eff_speed;
-  int FeedDelay;
+  int eff_speed; // замедление эффекта дисплея
+  int FeedDelay; // длительность импульса кормления
+  // boolean RelayUp; // инверсия реле
+  // boolean BeepOnOff; // Бипер on/off
   char ntp_srv[30];
   Feed_set feeds[2];
   Timer_set my_timer[timers_num];
@@ -24,21 +26,22 @@ void eeprom_write() {
   EEPROM_Data data;
 
   data.success = 0xA5;
-  data.ds_int = ds_int;
-  data.p_tem = p_tem;
-  data.h_tem = h_tem;
+  data.ds_int = ds_int; 
+  data.p_tem = p_tem; 
+  data.h_tem = h_tem; 
   data.valSelect = valSelect;
-  data.YearTime = YearTime; // Период показа даты
-  data.YearView = YearView;  // Время показа даты
+  data.YearTime = YearTime;
+  data.YearView = YearView;
   data.led_light = led_light;
   data.gmt_off = GMT_OFF;
-  data.ntp_req = ntp_req; // Период запроса NTP-сервера
-  data.eff_clock = eff_clock; // показ эффекта перед часами
+  data.ntp_req = ntp_req;
+  data.eff_clock = eff_clock;
   data.eff_speed = eff_speed;
   data.FeedDelay = FeedDelay;
-  for (uint8_t i = 0; i < sizeof(ntp_srv); i++) {
+  for (uint8_t i = 0; i < 30; i++) { // NTP-сервер
   // for (uint8_t i = 0; i < (strlen(ntp_srv) + 1); i++) {  
-    data.ntp_srv[i] = ntp_srv[i];
+    if (i < sizeof(ntp_srv)) data.ntp_srv[i] = ntp_srv[i];
+    else data.ntp_srv[i] = 0;
   }
   data.ntp_srv[sizeof(ntp_srv)] = 0;
   for (uint8_t i = 0; i < 2; i++) data.feeds[i] = Feeds[i];
@@ -87,14 +90,14 @@ boolean eeprom_read() {
   } else {
     mode = "TMR";
   }
-  YearTime = data.YearTime; // Период показа даты
-  YearView = data.YearView;  // Время показа даты
+  YearTime = data.YearTime;
+  YearView = data.YearView;
   led_light = data.led_light;
   led_intens = led_light/100;
   lc.setIntensity(0, led_intens);
   GMT_OFF = data.gmt_off;
-  ntp_req = data.ntp_req; // Период запроса NTP-сервера
-  eff_clock = data.eff_clock; // показ эффекта перед часами
+  ntp_req = data.ntp_req;
+  eff_clock = data.eff_clock;
   eff_speed = data.eff_speed;
   FeedDelay = data.FeedDelay;
 

@@ -22,6 +22,13 @@ void action() {
       }
     }
 
+    if (portal.clickBool("invrs", RelayUp)) {
+      if (DBG_portal) {
+        Serial.print("Инверсия реле: ");
+        Serial.println(RelayUp);
+      }
+    }
+
     // Строки
     if (portal.clickStr("ntps", ntp_srv)) {
       if (DBG_portal) {
@@ -206,14 +213,14 @@ void action() {
     if (portal.updateSub("led")) portal.answer(random(2));
     if (portal.updateSub("ldt1")) portal.answer(tempOK);
     if (portal.updateSub("ldt2")) portal.answer(!tempOK);
-    if (portal.updateSub("lbl")) {   // начинается с lbl
-      // формируем ответ вида "lbl #0: 123"
-      String s;
-      s += "lbl #";
-      s += portal.updateNameSub(1);
-      s += ":";
-      s += random(2);
-      portal.answer(s);
-    }
+    // if (portal.updateSub("lbl")) {   // начинается с lbl
+    //   // формируем ответ вида "lbl #0: 123"
+    //   String s;
+    //   s += "lbl #";
+    //   s += portal.updateNameSub(1);
+    //   s += ":";
+    //   s += random(2);
+    //   portal.answer(s);
+    // }
   }
 }
