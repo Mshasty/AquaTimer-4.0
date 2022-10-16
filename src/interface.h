@@ -10,6 +10,9 @@ void build() {
     s += "led/";
     s += i;
     s += ',';
+    s += "rled";
+    s += i;
+    s += ',';
   }
   s += "temp,ldt1,ldt2,tnow";
   GP.UPDATE(s);
@@ -52,7 +55,7 @@ void build() {
       //GP_MAKE_BOX(GP.LABEL("Первое:");  GP.CHECK("feed1ch", feed1ch);  GP.TIME("feed1start", feed1start);  );
       //GP_MAKE_BOX(GP.LABEL("Второе:");  GP.CHECK("feed2ch", feed2ch);  GP.TIME("feed2start", feed2start);  );
       GP.LABEL("Длительность, mS:");
-      GP.SLIDER("impuls", FeedDelay, 0, 5000, 100);
+      GP.SLIDER("impuls", FeedDelay, 300, 5000, 100);
       GP.BUTTON("btn_feed", "Покормить");
     );
 
@@ -67,17 +70,18 @@ void build() {
 
     GP_MAKE_BLOCK_THIN_TAB(
       "Часы",
-      GP_MAKE_BOX(GP.LABEL("Показ времени:");   GP.SLIDER("time_view", YearTime, 5, 45);  );
-      GP_MAKE_BOX(GP.LABEL("Показ данных:");   GP.SLIDER("data_view", YearView, 3, 30);  ); 
+      GP_MAKE_BOX(GP.LABEL("Показ времени:");   GP.SLIDER("time_view", YearTime, 5, 35);  );
+      GP_MAKE_BOX(GP.LABEL("Показ данных:");   GP.SLIDER("data_view", YearView, 3, 20);  ); 
       GP_MAKE_BOX(GP.LABEL("Яркость:");   GP.SLIDER("led_light", led_light, 10, 100, 10);  ); 
       GP.BREAK();
       GP_MAKE_BOX(GP.LABEL("Эффект перед часами:"); GP.SWITCH("eff_clock", eff_clock); );
-      GP_MAKE_BOX(GP.LABEL("Скорость эффекта:");   GP.SLIDER("eff_speed", eff_speed, 5, 120, 5);  );
+      GP_MAKE_BOX(GP.LABEL("Скорость эффекта:");   GP.SLIDER("eff_speed", eff_speed, 5, 45, 5);  );
     );
 
     GP_MAKE_BLOCK_THIN_TAB(
-      "Реле",
-      GP_MAKE_BOX(GP.LABEL("Инверсия:"); GP.SWITCH("invrs", RelayUp); );
+      "Инверсия",
+      GP_MAKE_BOX(GP.LABEL("Реле:"); GP.SWITCH("invrs", RelayUp); );
+      GP_MAKE_BOX(GP.LABEL("Мотор:"); GP.SWITCH("motor", VibroUp); );
     );
     
     GP_MAKE_BLOCK_THIN_TAB(
@@ -92,7 +96,7 @@ void build() {
       "Термостат",
       GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("ldt1"); GP.TEXT("temp", "Датчик", temp); GP.LED("ldt2"); );
       GP_MAKE_BOX(GP.LABEL("Порог:");   GP.SLIDER("p_tem", p_tem, 15, 39);  );
-      GP_MAKE_BOX(GP.LABEL("Гистерезис:");   GP.SLIDER("h_tem", h_tem, 0, 15);  );
+      GP_MAKE_BOX(GP.LABEL("Гистерезис:");   GP.SLIDER("h_tem", h_tem, 0, 7);  );
     );
     
     GP_MAKE_BLOCK_TAB(
@@ -100,8 +104,18 @@ void build() {
       GP_MAKE_BOX(GP.LABEL("Режим реле 1:");   GP.SELECT("sel", "Таймер 1,Температура,Ручной", valSelect);  );
       GP_MAKE_BOX(GP.LABEL("Ручное управление:"); GP.SWITCH("sw", valSwitch); );
       GP_MAKE_BOX(GP.LABEL("Статус реле:");
-        // создаём лейблы с именами led/0,led/1...
+        // создаём индикаторы статуса реле с именами rled0,rled1...
         for (int i = 0; i < relay_num; i++) {
+          GP.LED(String("rled") + i, 0);
+        }
+      );
+    );
+
+    GP_MAKE_BLOCK_TAB(
+      "Процессы",
+      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Процессы:");
+        // создаём лейблы с именами led/0,led/1...
+        for (int i = 0; i < 5; i++) {
           GP.LED(String("led/") + i, "#");
         }
       );

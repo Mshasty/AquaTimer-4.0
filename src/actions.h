@@ -10,8 +10,8 @@ void action() {
         Serial.println(valSwitch);
       }
       if (mode == "MAN") {
-        relay_on = valSwitch;
-        relayState(RELAY, valSwitch, "relay");
+        // relay_on = valSwitch;
+        relayState(0, valSwitch, "Relay 1 switch manual");
       }
     }
 
@@ -27,6 +27,20 @@ void action() {
         Serial.print("Инверсия реле: ");
         Serial.println(RelayUp);
       }
+      for (uint8_t i=0; i < relay_num; i++) {
+        relayState(i, !ChOnOff[i], "inverted by menu");
+        delay(100);
+        relayState(i, ChOnOff[i], "change polarity");
+      }
+    }
+
+    if (portal.clickBool("motor", VibroUp)) {
+      if (DBG_portal) {
+        Serial.print("Инверсия управления мотором: ");
+        Serial.println(VibroUp);
+      }
+      if (VibroUp) digitalWrite(VibroPin, HIGH);
+      else digitalWrite(VibroPin, LOW);
     }
 
     // Строки
@@ -127,8 +141,8 @@ void action() {
       if (portal.clickInt((String("tmr_days") + i), my_timer[i].Timer_days)) {
         my_timer[i].Timer_week = weekday_set[my_timer[i].Timer_days];
         if (DBG_portal) {
-          Serial.print((String("Таймер №") + (i + 1) + " роботает по дням недели "));
-          Serial.println(my_timer[i].Timer_week);
+          Serial.print((String("Таймер №") + (i + 1) + " работает по дням недели 0x"));
+          Serial.println(my_timer[i].Timer_week, HEX);
         }
       }
       if (portal.clickInt((String("tmr_relays") + i), my_timer[i].Timer_relay)) {
@@ -204,23 +218,15 @@ void action() {
   }
 
   if (portal.update()) {
-    //portal.updateString("temp", temp);
     if (portal.update("temp")) portal.answer(String(ds_tem, 2) + "°С");
 
-    //if (portal.update("tn")) portal.answer(String(hour())+":"+minute()+":"+second());
     if (portal.update("tnow")) portal.answer("  " + day_week(weekday()) + " " + lz(day()) + "." + lz(month()) + "." + lz(year()-2000) + " " + lz(hour()) + ":" + lz(minute()) );
 
     if (portal.updateSub("led")) portal.answer(random(2));
     if (portal.updateSub("ldt1")) portal.answer(tempOK);
     if (portal.updateSub("ldt2")) portal.answer(!tempOK);
-    // if (portal.updateSub("lbl")) {   // начинается с lbl
-    //   // формируем ответ вида "lbl #0: 123"
-    //   String s;
-    //   s += "lbl #";
-    //   s += portal.updateNameSub(1);
-    //   s += ":";
-    //   s += random(2);
-    //   portal.answer(s);
-    // }
+    for (uint8_t i=0; i < relay_num; i++) {
+      if (portal.updateSub(String("rled")+i)) portal.answer(ChOnOff[i]);
+    }
   }
 }

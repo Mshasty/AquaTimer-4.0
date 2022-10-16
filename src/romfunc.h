@@ -17,6 +17,7 @@ struct EEPROM_Data {
   int FeedDelay; // длительность импульса кормления
   // boolean RelayUp; // инверсия реле
   // boolean BeepOnOff; // Бипер on/off
+  // boolean VibroUp; // инверсия управления мотором
   char ntp_srv[30];
   Feed_set feeds[2];
   Timer_set my_timer[timers_num];
@@ -43,7 +44,6 @@ void eeprom_write() {
     if (i < sizeof(ntp_srv)) data.ntp_srv[i] = ntp_srv[i];
     else data.ntp_srv[i] = 0;
   }
-  data.ntp_srv[sizeof(ntp_srv)] = 0;
   for (uint8_t i = 0; i < 2; i++) data.feeds[i] = Feeds[i];
   for (uint8_t i = 0; i < timers_num; i++) data.my_timer[i] = my_timer[i];
 
@@ -110,7 +110,10 @@ boolean eeprom_read() {
     Serial.println(ntp_srv);
   }
   for (uint8_t i = 0; i < 2; i++) Feeds[i] = data.feeds[i];
-  for (uint8_t i = 0; i < timers_num; i++) my_timer[i] = data.my_timer[i];
+  for (uint8_t i = 0; i < timers_num; i++) {
+    my_timer[i] = data.my_timer[i];
+    my_timer[i].Timer_week = weekday_set[my_timer[i].Timer_days];
+  }
 
   return true;
 }

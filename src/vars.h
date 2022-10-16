@@ -1,12 +1,15 @@
-#define DBG true // Переменная для дебаг-сообщений
+#define DBG false // Переменная для дебаг-сообщений
 #define DBG_portal true // Переменная для дебага портала
 
 // глобальные переменные для работы с ними в программе
-static uint8_t relays[4] = {12, 0, 5, 16};
+static uint8_t relays[relay_num] = {12, 0, 5, 16};
 boolean RelayUp = false; // инверсия реле
-boolean ChOnOff[4];
+boolean VibroUp = false; // инверсия вибромотора
+boolean ChOnOff[relay_num];
 boolean BeepOnOff = false;
-unsigned int ds_int=5; // интервал замера ds18b20 в секундах 
+unsigned int ds_int = 5; // интервал замера ds18b20 в секундах
+unsigned int time_int = 1500; // интервал опроса таймеров в милисекундах
+unsigned int feed_int = 3000; // интервал опроса фидеров в милисекундах
 // unsigned int mqtt_int=30; // интервал отправки данных по MQTT в секундах 
 float tem; // тут храним температуру
 int p_tem=26; // температура включения реле
@@ -14,7 +17,6 @@ int h_tem=1; // гистерезис
 String mode = "TMR"; // режим работы по температуре/ручной ("TEM"/"MAN/TMR")
 char ntp_srv[30] = "ntp6.ntp-servers.net";
 int GMT_OFF=2; // Тайм-зона
-boolean relay_on;
 int YearTime=12; // Период показа даты
 int YearView=5;  // Время показа даты
 int led_light;
@@ -38,12 +40,13 @@ struct Timer_set {
   uint8_t Timer_week;
 };
 Timer_set my_timer[10];
-uint8_t weekday_set[6] = {127, 124, 3, 85, 42, 0};
+uint8_t weekday_set[6] = {0x7F, 0x1F, 0x60, 0x55, 0x2A, 0};
 struct Feed_set {
   boolean feed_sw;
   GPtime feed_start;
 };
 Feed_set Feeds[2];
+boolean feedOK;
 boolean valSwitch;
 int valSelect;
 boolean eff_clock=true; // показ эффекта перед часами
@@ -55,7 +58,7 @@ void set_vars_start() {
   int Timer_stop_hour[10] = {20, 18, 22, 16, 14, 20, 18, 13, 20, 16};
   int Timer_stop_minute[10] = {30, 40, 0, 25, 15, 0, 0, 0, 45, 0};
   int Timer_days[10] = {0, 1, 2, 3, 4, 0, 1, 2, 3, 4};
-  uint8_t Timer_week[10] = {127, 124, 3, 85, 42, 127, 124, 3, 85, 42};
+  uint8_t Timer_week[10] = {0x7F, 0x1F, 0x60, 0x55, 0x2A, 0x7F, 0x1F, 0x60, 0x55, 0x2A};
   int Timer_relay[10] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1};
 
   boolean feed_sw[2] = {true, false};
@@ -96,4 +99,9 @@ String day_week(int dw) {
 String lz(int val) {
     if (val<10) return "0" + String(val);
     else return String(val);
+}
+
+boolean XOR(boolean x, boolean y)
+{
+    return (x + y) % 2;
 }

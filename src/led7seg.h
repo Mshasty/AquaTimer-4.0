@@ -211,9 +211,9 @@ void ShowFeeding() {
   if (FeedDelay > 10000) lc.setDigit(0, 6, int(FeedDelay/10000), false);
   lc.setDigit(0, 5, int(FeedDelay/1000) % 10, true);
   lc.setDigit(0, 4, int(FeedDelay/100) % 10, false);
-  // digitalWrite(VibroPin, HIGH);
+  digitalWrite(VibroPin, !VibroUp);
   delay(FeedDelay);
-  // digitalWrite(VibroPin, LOW);
+  digitalWrite(VibroPin, VibroUp);
   if (FeedDelay < 750) delay(750 - FeedDelay);
 }
 

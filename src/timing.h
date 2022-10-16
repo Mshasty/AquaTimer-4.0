@@ -68,7 +68,7 @@ boolean update_handle(int interval) {
 
 
     interval_ = 1000 * interval;
-    if (timer + interval_ < millis()) { // Если интервал еще не истек
+    if (timer + interval_ < millis()) { // Если интервал уже истек
         if (DBG) {
             Serial.print("Интервал: ");
             Serial.println(interval_);
