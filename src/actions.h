@@ -22,6 +22,20 @@ void action() {
       }
     }
 
+    if (portal.clickBool("beep", BeepClockOn)) {
+      if (DBG_portal) {
+        Serial.print("Бипер каждый час: ");
+        Serial.println(BeepClockOn);
+      }
+    }
+
+    if (portal.clickBool("night_sw", my_light.Night_sw)) {
+      if (DBG_portal) {
+        Serial.print("Ночной режим: ");
+        Serial.println(my_light.Night_sw);
+      }
+    }
+
     if (portal.clickBool("invrs", RelayUp)) {
       if (DBG_portal) {
         Serial.print("Инверсия реле: ");
@@ -117,8 +131,17 @@ void action() {
 
     if (portal.clickInt("led_light", led_light)) {
       if (DBG_portal) {
-        Serial.print("***Slider. Яркость LED, %: ");
+        Serial.print("***Slider. Яркость LED днём, %: ");
         Serial.println(led_light);
+      }
+      led_intens = led_light/100;
+      lc.setIntensity(0, led_intens);
+    }
+
+    if (portal.clickInt("led_dark", led_dark)) {
+      if (DBG_portal) {
+        Serial.print("***Slider. Яркость LED ночью, %: ");
+        Serial.println(led_dark);
       }
       led_intens = led_light/100;
       lc.setIntensity(0, led_intens);
@@ -166,6 +189,20 @@ void action() {
           if (Feeds[i].feed_sw) Serial.println(" включено");
           else Serial.println(" выключено");
         }
+      }
+    }
+
+    if (portal.clickTime("night_on", my_light.Night_on)) {
+      if (DBG_portal) {
+        Serial.print("Старт ночного режима: ");
+        Serial.println(my_light.Night_on.encode());
+      }
+    }
+
+    if (portal.clickTime("night_off", my_light.Night_off)) {
+      if (DBG_portal) {
+        Serial.print("Конец ночного режима: ");
+        Serial.println(my_light.Night_off.encode());
       }
     }
 

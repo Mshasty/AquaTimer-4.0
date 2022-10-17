@@ -22,7 +22,7 @@ void ds_setup(void)
 {
   Serial.print("Locating devices...");
   sensors.begin();
-  Serial.print("Found ");
+  Serial.print(" Found ");
   Serial.print(sensors.getDeviceCount(), DEC);
   Serial.println(" devices.");
 

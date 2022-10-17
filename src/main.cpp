@@ -12,9 +12,6 @@ GyverPortal portal;
 #define BACKLIGHT_DAY 70  // Backlight for day
 #define BACKLIGHT_NIGHT 10 // Backlight for night
 
-#define relay_num 4 // Количество реле
-#define timers_num 5 // количество таймеров
-
 #include "vars.h"       // Список переменных
 // #include "pins.h"
 #include "ds18b20.h"    // в этом файле работа с датчиком ds18b20

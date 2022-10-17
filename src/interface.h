@@ -6,7 +6,7 @@ void build() {
   String s;
   // формируем список для UPDATE
   // вида "lbl/0,lbl/1..."
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 7; i++) {
     s += "led/";
     s += i;
     s += ',';
@@ -26,11 +26,6 @@ void build() {
 
   GP.NAV_TABS_LINKS("/,/timers,/feeding,/setting", "Main,Timers,Feed,SetUp");
   
-  // GP_MAKE_SPOILER(eff_speed
-  //   "Spoiler",
-  //   GP.LABEL("Hello!");
-  // );
-
   if (portal.uri("/timers")) {  
 
     
@@ -39,7 +34,7 @@ void build() {
         (String("Таймер № ") + (i+1)),
         // GP.LABEL("Период включения");
         GP_MAKE_BOX(GP.LABEL("╘═╛");   GP.TIME((String("tmr_start") + i), my_timer[i].Timer_start);   GP.TIME((String("tmr_stop") + i), my_timer[i].Timer_stop);  );
-        GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT((String("tmr_days") + i), "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙,.......", my_timer[i].Timer_days);  GP.LABEL("Реле"); GP.SELECT((String("tmr_relays") + i), "1,2,3,4", my_timer[i].Timer_relay); );
+        GP_MAKE_BOX(GP.LABEL("Дни"); GP.SELECT((String("tmr_days") + i), week_select, my_timer[i].Timer_days);  GP.LABEL("Реле"); GP.SELECT((String("tmr_relays") + i), "1,2,3,4", my_timer[i].Timer_relay); );
       );
     }
 
@@ -52,8 +47,6 @@ void build() {
       for (uint8_t i = 0; i < 2; i++) {
         GP_MAKE_BOX(GP.LABEL((String("▼ ") + (i+1)));  GP.CHECK((String("feed_sw") + i), Feeds[i].feed_sw);  GP.TIME((String("feed_time") + i), Feeds[i].feed_start);  );
       }
-      //GP_MAKE_BOX(GP.LABEL("Первое:");  GP.CHECK("feed1ch", feed1ch);  GP.TIME("feed1start", feed1start);  );
-      //GP_MAKE_BOX(GP.LABEL("Второе:");  GP.CHECK("feed2ch", feed2ch);  GP.TIME("feed2start", feed2start);  );
       GP.LABEL("Длительность, mS:");
       GP.SLIDER("impuls", FeedDelay, 300, 5000, 100);
       GP.BUTTON("btn_feed", "Покормить");
@@ -70,12 +63,20 @@ void build() {
 
     GP_MAKE_BLOCK_THIN_TAB(
       "Часы",
-      GP_MAKE_BOX(GP.LABEL("Показ времени:");   GP.SLIDER("time_view", YearTime, 5, 35);  );
-      GP_MAKE_BOX(GP.LABEL("Показ данных:");   GP.SLIDER("data_view", YearView, 3, 20);  ); 
-      GP_MAKE_BOX(GP.LABEL("Яркость:");   GP.SLIDER("led_light", led_light, 10, 100, 10);  ); 
-      GP.BREAK();
+      GP_MAKE_BOX(GP.LABEL("Показ времени:");   GP.SLIDER("time_view", YearTime, 5, 35); );
+      GP_MAKE_BOX(GP.LABEL("Показ данных:");   GP.SLIDER("data_view", YearView, 3, 20); ); 
       GP_MAKE_BOX(GP.LABEL("Эффект перед часами:"); GP.SWITCH("eff_clock", eff_clock); );
-      GP_MAKE_BOX(GP.LABEL("Скорость эффекта:");   GP.SLIDER("eff_speed", eff_speed, 5, 45, 5);  );
+      GP_MAKE_BOX(GP.LABEL("Скорость эффекта:");   GP.SLIDER("eff_speed", eff_speed, 5, 45, 5); );
+      GP_MAKE_BOX(GP.LABEL("Бип каждый час:"); GP.SWITCH("beep", BeepClockOn); );
+    );
+
+    GP_MAKE_BLOCK_THIN_TAB(
+      "Ночной режим",
+      GP_MAKE_BOX(GP.LABEL("Включить режим:"); GP.SWITCH("night_sw", my_light.Night_sw); );
+      GP_MAKE_BOX(GP.LABEL("◌└┘");   GP.TIME("night_on", my_light.Night_on);   GP.TIME("night_off", my_light.Night_off); );
+      GP.BREAK(); GP.LABEL("Яркость:");
+      GP_MAKE_BOX(GP.LABEL("Днём: ");   GP.SLIDER("led_light", led_light, 10, 100, 10);  );
+      GP_MAKE_BOX(GP.LABEL("Ночью:");   GP.SLIDER("led_dark", led_dark, 5, 50, 5);  );
     );
 
     GP_MAKE_BLOCK_THIN_TAB(
@@ -94,7 +95,7 @@ void build() {
 
     GP_MAKE_BLOCK_TAB(
       "Термостат",
-      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("ldt1"); GP.TEXT("temp", "Датчик", temp); GP.LED("ldt2"); );
+      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Температура"); GP.LED("ldt1"); GP.TEXT("temp", "DS18B20"); GP.LED("ldt2"); );
       GP_MAKE_BOX(GP.LABEL("Порог:");   GP.SLIDER("p_tem", p_tem, 15, 39);  );
       GP_MAKE_BOX(GP.LABEL("Гистерезис:");   GP.SLIDER("h_tem", h_tem, 0, 7);  );
     );
@@ -111,11 +112,11 @@ void build() {
       );
     );
 
-    GP_MAKE_BLOCK_TAB(
+    GP_MAKE_BLOCK_THIN_TAB(
       "Процессы",
-      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Процессы:");
+      GP_MAKE_BOX(GP_CENTER,
         // создаём лейблы с именами led/0,led/1...
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 7; i++) {
           GP.LED(String("led/") + i, "#");
         }
       );
@@ -127,5 +128,3 @@ void build() {
   
   GP.BUILD_END();
 }
-
-
