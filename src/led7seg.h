@@ -217,8 +217,6 @@ void ShowFeeding() {
   if (FeedDelay < 750) delay(750 - FeedDelay);
 }
 
-
-
 void IP_Show() {
   uint8_t ipb[4];
   uint8_t ipab[3][4];
@@ -290,3 +288,36 @@ void time_handle() {
   } 
 }
 
+void night_handle(unsigned int del_int) {
+  static unsigned long del_night;
+  unsigned int time_now;
+  unsigned int time_on;
+  unsigned int time_off;
+  float old_intens;
+  float new_intens;
+
+  if (!my_light.Night_sw) {
+    NightMode = false;
+    return;
+  }
+  if (del_night + del_int < millis()) { // Если интервал уже истек
+    time_now = hour() * 60 + minute();
+    time_on = my_light.Night_on.hour * 60 + my_light.Night_on.minute;
+    time_off = my_light.Night_off.hour * 60 + my_light.Night_off.minute;
+    old_intens = led_intens;
+    if ((time_now >= time_on) || (time_now < time_off)) {
+      new_intens = led_dark / 100;
+      NightMode = true;
+    } else {
+      new_intens = led_light / 100;
+      NightMode = false;
+    }
+    led_intens = new_intens;
+    if (!(new_intens == old_intens)) {
+      lc.setIntensity(0, new_intens);
+      if (DBG) {}
+      Serial.println("Смена режима день/ночь");
+    }
+    del_night = millis();
+  }
+}

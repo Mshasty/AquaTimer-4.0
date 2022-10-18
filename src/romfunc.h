@@ -21,6 +21,10 @@ struct EEPROM_Data {
   boolean VibroUp; // инверсия управления мотором
   boolean BeepOnOff; // Бипер on/off
   boolean BeepClockOn; // Кукушка каждый час
+  boolean zakat_sw = false; // закат/рассвет on/off
+  boolean zakat_inv = false; // инверсия заката/рассвета
+  int zakat_del = 30; // длительность рассвета в секундах
+  int zakat_rel = 1; // индекс реле для заката/рассвета
   char ntp_srv[30];
   Feed_set feeds[2];
   Timer_set my_timer[timers_num];
@@ -48,6 +52,10 @@ void eeprom_write() {
   data.VibroUp = VibroUp;
   data.BeepOnOff = BeepOnOff;
   data.BeepClockOn = BeepClockOn;
+  data.zakat_sw = zakat_sw;
+  data.zakat_inv = zakat_inv;
+  data.zakat_del = zakat_del;
+  data.zakat_rel = zakat_rel;
   for (uint8_t i = 0; i < 30; i++) { // NTP-сервер
   // for (uint8_t i = 0; i < (strlen(ntp_srv) + 1); i++) {  
     if (i < sizeof(ntp_srv)) data.ntp_srv[i] = ntp_srv[i];
@@ -115,6 +123,10 @@ boolean eeprom_read() {
   VibroUp = data.VibroUp;
   BeepOnOff = data.BeepOnOff;
   BeepClockOn = data.BeepClockOn;
+  zakat_sw = data.zakat_sw;
+  zakat_inv = data.zakat_inv;
+  zakat_del = data.zakat_del;
+  zakat_rel = data.zakat_rel;
 
   for (j = 0; j < 30; j++) {
     ntp_srv[j] = data.ntp_srv[j];

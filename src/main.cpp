@@ -58,6 +58,7 @@ void loop() {
   timer_handle(time_int);
   feed_handle(feed_int);
   ds_handle(ds_int); // цикл замера температуры ds18b20
+  night_handle(night_int);
 	if (time_setup) {
 		time_set = update_handle(ntp_req * 60);
 	} else {

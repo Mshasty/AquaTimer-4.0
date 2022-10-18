@@ -6,7 +6,7 @@ void action() {
     // Переключатели
     if (portal.clickBool("sw", valSwitch)) {
       if (DBG_portal) {
-        Serial.print("Switch: ");
+        Serial.print("***Switch. Ручное управление 1-ым реле: ");
         Serial.println(valSwitch);
       }
       if (mode == "MAN") {
@@ -17,28 +17,42 @@ void action() {
 
     if (portal.clickBool("eff_clock", eff_clock)) {
       if (DBG_portal) {
-        Serial.print("Показ эффекта перед часами: ");
+        Serial.print("***Switch. Показ эффекта перед часами: ");
         Serial.println(eff_clock);
       }
     }
 
     if (portal.clickBool("beep", BeepClockOn)) {
       if (DBG_portal) {
-        Serial.print("Бипер каждый час: ");
+        Serial.print("***Switch. Бипер каждый час: ");
         Serial.println(BeepClockOn);
       }
     }
 
     if (portal.clickBool("night_sw", my_light.Night_sw)) {
       if (DBG_portal) {
-        Serial.print("Ночной режим: ");
+        Serial.print("***Switch. Ночной режим: ");
         Serial.println(my_light.Night_sw);
+      }
+    }
+
+    if (portal.clickBool("zakat_sw", zakat_sw)) {
+      if (DBG_portal) {
+        Serial.print("***Switch. Режим закат/рассвет: ");
+        Serial.println(zakat_sw);
+      }
+    }
+
+    if (portal.clickBool("zakat_inv", zakat_inv)) {
+      if (DBG_portal) {
+        Serial.print("***Switch. Инверсия закат/рассвет: ");
+        Serial.println(zakat_inv);
       }
     }
 
     if (portal.clickBool("invrs", RelayUp)) {
       if (DBG_portal) {
-        Serial.print("Инверсия реле: ");
+        Serial.print("***Switch. Инверсия реле: ");
         Serial.println(RelayUp);
       }
       for (uint8_t i=0; i < relay_num; i++) {
@@ -50,7 +64,7 @@ void action() {
 
     if (portal.clickBool("motor", VibroUp)) {
       if (DBG_portal) {
-        Serial.print("Инверсия управления мотором: ");
+        Serial.print("***Switch. Инверсия управления мотором: ");
         Serial.println(VibroUp);
       }
       if (VibroUp) digitalWrite(VibroPin, HIGH);
@@ -60,7 +74,7 @@ void action() {
     // Строки
     if (portal.clickStr("ntps", ntp_srv)) {
       if (DBG_portal) {
-        Serial.print("NTP server: ");
+        Serial.print("***String. NTP server: ");
         Serial.println(ntp_srv);
       }
     }
@@ -129,13 +143,22 @@ void action() {
       }
     }
 
+    if (portal.clickInt("zakat_del", zakat_del)) {
+      if (DBG_portal) {
+        Serial.print("***Slider. Длительность рассвета, сек: ");
+        Serial.println(zakat_del);
+      }
+    }
+
     if (portal.clickInt("led_light", led_light)) {
       if (DBG_portal) {
         Serial.print("***Slider. Яркость LED днём, %: ");
         Serial.println(led_light);
       }
-      led_intens = led_light/100;
-      lc.setIntensity(0, led_intens);
+      if (!NightMode) {
+        led_intens = led_light/100;
+        lc.setIntensity(0, led_intens);
+      }
     }
 
     if (portal.clickInt("led_dark", led_dark)) {
@@ -143,34 +166,36 @@ void action() {
         Serial.print("***Slider. Яркость LED ночью, %: ");
         Serial.println(led_dark);
       }
-      led_intens = led_light/100;
-      lc.setIntensity(0, led_intens);
+      if (NightMode) {
+        led_intens = led_dark/100;
+        lc.setIntensity(0, led_intens);
+      }
     }
 
     // таймеры
     for (uint8_t i = 0; i < timers_num; i++) {
       if (portal.clickTime((String("tmr_start") + i), my_timer[i].Timer_start)) {
         if (DBG_portal) {
-          Serial.print((String("Таймер старт №") + (i + 1) + ": "));
+          Serial.print((String("***Time. Таймер старт №") + (i + 1) + ": "));
           Serial.println(my_timer[i].Timer_start.encode());
         }
       }
       if (portal.clickTime((String("tmr_stop") + i), my_timer[i].Timer_stop)) {
         if (DBG_portal) {
-          Serial.print((String("Таймер стоп №") + (i + 1) + ": "));
+          Serial.print((String("***Time. Таймер стоп №") + (i + 1) + ": "));
           Serial.println(my_timer[i].Timer_stop.encode());
         }
       }
       if (portal.clickInt((String("tmr_days") + i), my_timer[i].Timer_days)) {
         my_timer[i].Timer_week = weekday_set[my_timer[i].Timer_days];
         if (DBG_portal) {
-          Serial.print((String("Таймер №") + (i + 1) + " работает по дням недели 0x"));
+          Serial.print((String("***Time. Таймер №") + (i + 1) + " работает по дням недели 0x"));
           Serial.println(my_timer[i].Timer_week, HEX);
         }
       }
       if (portal.clickInt((String("tmr_relays") + i), my_timer[i].Timer_relay)) {
         if (DBG_portal) {
-          Serial.print((String("Таймер №") + (i + 1) + " теперь управляет реле "));
+          Serial.print((String("***Time. Таймер №") + (i + 1) + " теперь управляет реле "));
           Serial.println(my_timer[i].Timer_relay+1);
         }
       }
@@ -178,7 +203,7 @@ void action() {
     for (uint8_t i = 0; i < 2; i++) {
       if (portal.clickTime((String("feed_time") + i), Feeds[i].feed_start)) {
         if (DBG_portal) {
-          Serial.print((String("Кормление ") + (i + 1) + " стартует в "));
+          Serial.print((String("***Time. Кормление ") + (i + 1) + " стартует в "));
           Serial.println(Feeds[i].feed_start.encode());
         }
       }
@@ -194,14 +219,14 @@ void action() {
 
     if (portal.clickTime("night_on", my_light.Night_on)) {
       if (DBG_portal) {
-        Serial.print("Старт ночного режима: ");
+        Serial.print("***Time. Старт ночного режима: ");
         Serial.println(my_light.Night_on.encode());
       }
     }
 
     if (portal.clickTime("night_off", my_light.Night_off)) {
       if (DBG_portal) {
-        Serial.print("Конец ночного режима: ");
+        Serial.print("***Time. Конец ночного режима: ");
         Serial.println(my_light.Night_off.encode());
       }
     }
@@ -211,8 +236,15 @@ void action() {
     //   Serial.println(valCol.encode());
     // }
 
+    if (portal.clickInt("zakat_rel", zakat_rel)) {
+      if (DBG_portal) {
+        Serial.print("***Select. Реле заката/рассвета: ");
+        Serial.println(zakat_rel + 1);
+      }
+    }
+    
     if (portal.clickInt("sel", valSelect)) {
-      if (DBG_portal) Serial.print("Режим работы реле 1: ");
+      if (DBG_portal) Serial.print("***Select. Режим работы реле 1: ");
       if (valSelect==1) {
         if (DBG_portal) Serial.println("Температура");
         mode = "TEM";
