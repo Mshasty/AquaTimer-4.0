@@ -81,11 +81,15 @@ void build() {
     GP_MAKE_BLOCK_THIN_TAB(
       "ШИМ",
       GP_MAKE_BOX(GP.LABEL("Закат/рассвет:"); GP.SWITCH("zakat_sw", zakat_sw); );
-      GP_MAKE_BOX(GP.LABEL("Секунды: "); GP.SLIDER("zakat_del", zakat_del, 10, 240, 10); );
+      GP_MAKE_BOX(GP.LABEL("Секунды: "); GP.SLIDER("zakat_del", zakat_del, 10, 360, 10); );
       String strZakatRelays = "1";
       for (uint8_t i = 1; i < relay_num; i++) strZakatRelays += (", " + String(i + 1));
       GP_MAKE_BOX(GP.LABEL("Канал закат/рассвет:"); GP.SELECT("zakat_rel", strZakatRelays, zakat_rel); );
       GP_MAKE_BOX(GP.LABEL("Инверсия канала:"); GP.SWITCH("zakat_inv", zakat_inv); );
+      GP.BREAK();
+      GP_MAKE_BOX(GP_CENTER, GP.LABEL("Крайние значения ШИМ"); );
+      GP_MAKE_BOX(GP.LABEL("Min: "); GP.SLIDER("zakat_min", zakat_min, 3, 1023, 4); );
+      GP_MAKE_BOX(GP.LABEL("Max: "); GP.SLIDER("zakat_max", zakat_max, 3, 1023, 4); );
     );
 
     GP_MAKE_BLOCK_THIN_TAB(

@@ -53,7 +53,7 @@ boolean ntp(int interval, String NTPhost, int8_t timeZone) {
         NTP.setInterval(interval);
         ntp_setup = true;
         if (DBG) {
-            Serial.print("собственно, запрос на ");
+            Serial.print(" собственно, запрос на ");
             Serial.println(NTPhost);
         }
     }
@@ -84,4 +84,14 @@ boolean update_handle(int interval) {
 void myDelay(uint16_t deltm) {
   unsigned long TimeStop = deltm + millis();
   while (millis() < TimeStop);      
+}
+
+String strTimeNow() {
+    String strCurrentTime;
+
+    if (time_setup )
+        strCurrentTime = String(hour()) + ":" + lz(minute()) + ":" + lz(second()) + "(" + (millis() % 1000) + ") ";
+    else
+        strCurrentTime = String(millis() / 1000) + "." + (millis() % 1000);
+    return strCurrentTime;
 }

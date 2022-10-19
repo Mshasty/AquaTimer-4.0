@@ -11,7 +11,7 @@ void action() {
       }
       if (mode == "MAN") {
         // relay_on = valSwitch;
-        relayState(0, valSwitch, "Relay 1 switch manual");
+        relayState(0, valSwitch, "switch manual");
       }
     }
 
@@ -36,11 +36,13 @@ void action() {
       }
     }
 
+    // переключение режима закат/рассвет  
     if (portal.clickBool("zakat_sw", zakat_sw)) {
       if (DBG_portal) {
         Serial.print("***Switch. Режим закат/рассвет: ");
         Serial.println(zakat_sw);
       }
+      RelayZakatAfter();    
     }
 
     if (portal.clickBool("zakat_inv", zakat_inv)) {
@@ -48,6 +50,7 @@ void action() {
         Serial.print("***Switch. Инверсия закат/рассвет: ");
         Serial.println(zakat_inv);
       }
+      RelayZakatAfter();
     }
 
     if (portal.clickBool("invrs", RelayUp)) {
@@ -150,6 +153,24 @@ void action() {
       }
     }
 
+    if (portal.clickInt("zakat_min", zakat_min)) {
+      if (DBG_portal) {
+        Serial.print("***Slider. Начальное значение ШИМ: ");
+        Serial.println(zakat_min);
+      }
+      if (zakat_inv) analogWrite(relays[zakat_rel], 1023 - zakat_min);
+      else analogWrite(relays[zakat_rel], zakat_min);
+    }
+
+    if (portal.clickInt("zakat_max", zakat_max)) {
+      if (DBG_portal) {
+        Serial.print("***Slider. Конечное значение ШИМ: ");
+        Serial.println(zakat_max);
+      }
+      if (zakat_inv) analogWrite(relays[zakat_rel], 1023 - zakat_max);
+      else analogWrite(relays[zakat_rel], zakat_max);
+    }
+
     if (portal.clickInt("led_light", led_light)) {
       if (DBG_portal) {
         Serial.print("***Slider. Яркость LED днём, %: ");
@@ -210,7 +231,7 @@ void action() {
       if (portal.clickBool((String("feed_sw") + i), Feeds[i].feed_sw)) {
         // Feeds[i].feed_sw = portal.getBool((String("feed_sw") + i));
         if (DBG_portal) {
-          Serial.print((String("Кормление ") + (i + 1)));
+          Serial.print(strTimeNow() + String("Кормление ") + (i + 1));
           if (Feeds[i].feed_sw) Serial.println(" включено");
           else Serial.println(" выключено");
         }
@@ -259,22 +280,22 @@ void action() {
 
     // Кнопки
     if (portal.click("btn_feed")) {
-      if (DBG_portal) Serial.println("Feed button click");
+      if (DBG_portal) Serial.println(strTimeNow() + "Feed button click");
       ShowFeeding();
     } 
 
     if (portal.click("load_conf")) {
       if (DBG_portal) Serial.println("Load button click");
       if (eeprom_read()) {
-        if (DBG_portal) Serial.println("Конфигурация загружена");
+        if (DBG_portal) Serial.println(strTimeNow() + "Конфигурация загружена");
         //portal.start();
         portal.show();
       }
-      else Serial.println("Ошибка загрузки конфигурации");
+      else Serial.println(strTimeNow() + "Ошибка загрузки конфигурации");
     }
 
     if (portal.click("save_conf")) {
-      if (DBG_portal) Serial.println("Конфигурация сохранена");
+      if (DBG_portal) Serial.println(strTimeNow() + "Конфигурация сохранена");
       eeprom_write();
     }
     

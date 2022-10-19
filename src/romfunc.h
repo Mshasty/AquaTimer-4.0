@@ -21,10 +21,12 @@ struct EEPROM_Data {
   boolean VibroUp; // инверсия управления мотором
   boolean BeepOnOff; // Бипер on/off
   boolean BeepClockOn; // Кукушка каждый час
-  boolean zakat_sw = false; // закат/рассвет on/off
-  boolean zakat_inv = false; // инверсия заката/рассвета
-  int zakat_del = 30; // длительность рассвета в секундах
-  int zakat_rel = 1; // индекс реле для заката/рассвета
+  boolean zakat_sw; // закат/рассвет on/off
+  boolean zakat_inv; // инверсия заката/рассвета
+  int zakat_del; // длительность рассвета в секундах
+  int zakat_rel; // индекс реле для заката/рассвета
+  int zakat_min; // начальная величина рассвета
+  int zakat_max; // конечная величина рассвета
   char ntp_srv[30];
   Feed_set feeds[2];
   Timer_set my_timer[timers_num];
@@ -56,6 +58,8 @@ void eeprom_write() {
   data.zakat_inv = zakat_inv;
   data.zakat_del = zakat_del;
   data.zakat_rel = zakat_rel;
+  data.zakat_min = zakat_min;
+  data.zakat_max = zakat_max;
   for (uint8_t i = 0; i < 30; i++) { // NTP-сервер
   // for (uint8_t i = 0; i < (strlen(ntp_srv) + 1); i++) {  
     if (i < sizeof(ntp_srv)) data.ntp_srv[i] = ntp_srv[i];
@@ -127,6 +131,8 @@ boolean eeprom_read() {
   zakat_inv = data.zakat_inv;
   zakat_del = data.zakat_del;
   zakat_rel = data.zakat_rel;
+  zakat_min = data.zakat_min;
+  zakat_max = data.zakat_max;
 
   for (j = 0; j < 30; j++) {
     ntp_srv[j] = data.ntp_srv[j];

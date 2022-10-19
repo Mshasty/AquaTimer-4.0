@@ -3,9 +3,24 @@ boolean DBG_relay = false;
 void relayState(uint8_t r_num, boolean state, String mess){
 
     if (!XOR(ChOnOff[r_num], state)) return;
-    digitalWrite(relays[r_num], XOR(state, RelayUp));
+    if ((r_num == zakat_rel) && (zakat_sw)) {
+      float interrupt_period = float(zakat_del) * zakat_step / (zakat_max - zakat_min);
+      Serial.print("Период прерывания: ");
+      Serial.println(interrupt_period, 3);
+      if (state) {
+        zakat_cur = zakat_min;
+        blinker.attach(interrupt_period, daybreakIsr);
+        Serial.println(strTimeNow() + "Старт рассвета");
+      } else {
+        zakat_cur = zakat_max;
+        blinker.attach(interrupt_period, sundownIsr);
+        Serial.println(strTimeNow() + "Старт заката");
+      }
+    } else {
+      digitalWrite(relays[r_num], XOR(state, RelayUp));
+    }
     ChOnOff[r_num] = state;
-    String umes = "Relay " + String(r_num+1) + " " + mess;
+    String umes = strTimeNow() + "Relay " + String(r_num+1) + " " + mess;
     if (state) umes += " is switch on";
     else  umes += " is switch off";
     Serial.println(umes);
@@ -99,7 +114,7 @@ void timer_handle(unsigned int deltime) {
     }
     if (mode == "TMR") 
       if (XOR(ChOnOff[0], relay_state[0])) 
-        relayState(0, relay_state[0], "in mode TMR controlled by a timers");
+        relayState(0, relay_state[0], "in timer controlled TMR mode");
     for (uint8_t i=1; i < relay_num; i++) 
       relayState(i, relay_state[i], "controlled by a timers");
     del_timer = millis();
@@ -129,5 +144,24 @@ void feed_handle(unsigned int delfeed) {
       }  
     }
     del_feeder = millis();
+  }
+}
+
+void RelayZakatAfter() {
+  if (zakat_sw) {
+    if (ChOnOff[zakat_rel]) { 
+      Serial.println(strTimeNow() + "Возвращаем реле заката в 1");
+      if (zakat_inv) {
+          analogWrite(relays[zakat_rel], 1023 - zakat_max);
+      } else {
+        analogWrite(relays[zakat_rel], zakat_max);
+      }
+    } else {
+      Serial.println(strTimeNow() + "Возвращаем реле заката в 0");
+      digitalWrite(relays[zakat_rel], zakat_inv);
+    }
+  } else {
+    digitalWrite(relays[zakat_rel], XOR(ChOnOff[zakat_rel], RelayUp));
+    Serial.println(strTimeNow() + "Возвращаем реле заката в прежнюю позицию");
   }
 }

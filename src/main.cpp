@@ -16,6 +16,7 @@ GyverPortal portal;
 // #include "pins.h"
 #include "ds18b20.h"    // в этом файле работа с датчиком ds18b20
 #include "timing.h"
+#include "sunset.h"
 #include "relay.h"      // в этом файле работа с реле
 #include "led7seg.h"
 #include "romfunc.h"
@@ -64,7 +65,10 @@ void loop() {
 	} else {
 		if (DBG) Serial.println("Первичный запрос NTP");
     time_set = update_handle(5);
-    if (time_set) time_setup = true;
+    if (time_set) {
+      time_setup = true; 
+      Serial.println(strTimeNow() + "- время получено");
+    }
 	}
 	date_handle(YearTime * 1000);
 	if (!YearShow) time_handle();

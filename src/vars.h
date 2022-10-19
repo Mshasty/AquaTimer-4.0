@@ -39,7 +39,12 @@ boolean NightMode = false; // Ночной режим
 boolean zakat_sw = false; // закат/рассвет on/off
 boolean zakat_inv = false; // инверсия заката/рассвета
 int zakat_del = 30; // длительность рассвета в секундах
-int zakat_rel = 1; // индекс реле для заката/рассвета
+int zakat_rel = 1; // индекс канала для заката/рассвета
+int zakat_min = 0; // начальный уровень PWM
+int zakat_max = 1023; // максимальный уровень PWM
+int zakat_cur = 0; // текущий уровень PWM
+int zakat_step = 4; // шаг PWM
+float zakat_int = 1; // период обращения к прерыванию в секундах
 // unsigned int mqtt_int=30; // интервал отправки данных по MQTT в секундах 
 float tem; // тут храним температуру
 int p_tem=26; // температура включения реле
