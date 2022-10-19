@@ -148,7 +148,8 @@ void date_handle(unsigned long DateTimeView) {
       } else {
         if (DBG) Serial.println(F("*** Show Date ***"));
         digitalDateDisplay();
-        LastDate = true;
+        if (ds_int) LastDate = true;
+        else LastDate = false; // температуру не показываем
       }
     }
   }

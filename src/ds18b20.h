@@ -22,9 +22,11 @@ void ds_setup(void)
 {
   Serial.print("Locating devices...");
   sensors.begin();
+  int ds_count = sensors.getDeviceCount();
   Serial.print(" Found ");
-  Serial.print(sensors.getDeviceCount(), DEC);
+  Serial.print(ds_count, DEC);
   Serial.println(" devices.");
+  if (!ds_count) ds_int = 0;
 
   Serial.print("Parasite power is: "); 
   if (sensors.isParasitePowerMode()) Serial.println("ON");
