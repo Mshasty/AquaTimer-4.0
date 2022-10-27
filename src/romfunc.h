@@ -69,9 +69,9 @@ void eeprom_write() {
   for (uint8_t i = 0; i < timers_num; i++) data.my_timer[i] = my_timer[i];
 
   if (DBG) {
-    Serial.println("Размер используемого EEPROM " + String(sizeof(data)) + " байт");
-    // Serial.print(sizeof(data));
-    // Serial.println(" байт");
+    Serial.print("Размер используемого EEPROM ");
+    Serial.print(sizeof(data));
+    Serial.println(" байт");
   }
   
   EEPROM.begin(sizeof(data));
@@ -86,9 +86,9 @@ boolean eeprom_read() {
   // char my_ntp_srv[30];
 
   if (DBG) {
-    Serial.println("Размер используемого EEPROM " + String(sizeof(data)) + " байт");
-    // Serial.print(sizeof(data));
-    // Serial.println(" байт");
+    Serial.print("Размер используемого EEPROM ");
+    Serial.print(sizeof(data));
+    Serial.println(" байт");
   }
 
   EEPROM.begin(sizeof(data));

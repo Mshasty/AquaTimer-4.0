@@ -1,4 +1,4 @@
-#define DBG false // Переменная для дебаг-сообщений
+#define DBG true // Переменная для дебаг-сообщений
 #define DBG_portal true // Переменная для дебага портала
 
 #define relay_num 4 // Количество реле
@@ -22,7 +22,7 @@ struct Light_set {
 };
 
 // глобальные переменные для работы с ними в программе
-static uint8_t relays[relay_num] = {12, 0, 5, 16};
+static uint8_t relays[relay_num] = {16, 5, 0, 12};
 uint8_t weekday_set[6] = {0x7F, 0x1F, 0x60, 0x55, 0x2A, 0}; // преобразователь выбора в биты дней недели
 String week_select = "√√√√√√√,√√√√√∙∙,∙∙∙∙∙√√,√∙√∙√∙√,∙√∙√∙√∙,......."; // побитовый выбор визуально
 unsigned int ds_int = 5; // интервал замера ds18b20 в секундах
