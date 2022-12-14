@@ -1,4 +1,4 @@
-#define DBG true // Переменная для дебаг-сообщений
+#define DBG false // Переменная для дебаг-сообщений
 #define DBG_portal true // Переменная для дебага портала
 
 #define relay_num 4 // Количество реле
