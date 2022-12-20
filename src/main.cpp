@@ -26,7 +26,7 @@ GyverPortal portal;
 void setup() {
   // delay(1000);
   pins_set();
-  Serial.begin(11200);
+  Serial.begin(115200);
   Serial.println("\nLED start");
 	lc.shutdown(0, false); // Initialize LCD
 	lc.setIntensity(0, .7); // Set the brightness to a low value
