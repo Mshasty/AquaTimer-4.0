@@ -4,6 +4,9 @@
 #define relay_num 4 // Количество реле
 #define timers_num 5 // количество таймеров
 
+#define AP_SSID "Bikar6"
+#define AP_PASS "htdjkzwbz1917"
+
 struct Timer_set {
   GPtime Timer_start;
   GPtime Timer_stop;
@@ -50,8 +53,8 @@ float tem; // тут храним температуру
 int p_tem=26; // температура включения реле
 int h_tem=1; // гистерезис
 String mode = "TMR"; // режим работы по температуре/ручной (TEM/MAN/TMR)
-char ntp_srv[30] = "ntp6.ntp-servers.net";
-int GMT_OFF=2; // Тайм-зона
+char ntp_srv[30] = "ntp.msk-ix.ru";
+int GMT_OFF=3; // Тайм-зона
 int ntp_req=25; // Период запроса NTP-сервера
 int YearTime=12; // Период показа даты
 int YearView=5;  // Время показа даты
@@ -71,6 +74,26 @@ boolean valSwitch; // Ручное управление 1-ым реле
 int valSelect; // Выбор режима 1-го реле
 boolean eff_clock=true; // показ эффекта перед часами
 int eff_speed = 15; // скорость эффекта перед часами
+
+byte letterA = 0x77;
+byte letterB = 0x7F;
+byte letterC = 0x4E;
+byte letterD = 0x3d;
+byte letterE = 0x4F;
+byte letterF = 0x47;
+byte letterG = 0x5e;
+byte letterH = 0x37;
+byte letterI = 0x30;
+byte letterJ = 0x38;
+byte letterL = 0x0E;
+byte letterN = 0x76;
+byte letterO = 0x7E;
+byte letterP = 0x67;
+byte letterR = 0x05;
+byte letterS = 0x5b;
+byte letterT = 0x0f;
+byte letterU = 0x3e;
+byte letterY = 0x3b;
 
 void set_vars_start() {
   int Timer_start_hour[10] = {9, 16, 11, 15, 12, 17, 13, 10, 20, 14};
