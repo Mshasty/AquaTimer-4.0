@@ -66,9 +66,8 @@ void timer_handle(unsigned int deltime) {
   boolean relay_state[relay_num];
   uint8_t bitDay = 1;
   Datime dt(NTP);
-    int wd = dt.weekDay - 1;
+  int wd = dt.weekDay;
   
-  if (!wd) wd = 7;
   if (wd > 1) bitDay <<= (wd-1);
 
   for (uint8_t i=0; i < relay_num; i++) { // инициализируем статусы
