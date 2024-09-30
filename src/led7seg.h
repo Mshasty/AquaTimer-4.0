@@ -24,16 +24,17 @@ void digitalClockDisplay() {
   //char *dayOfWeek;
   //breakTime(now(), tm);
   lc.clearDisplay(0);
-  int wd = weekday() - 1;
-  if (!wd) wd = 7;
+  Datime dt(NTP);
+  int wd = dt.weekDay;
+  if (!wd) wd = 0;
   lc.setDigit(0, 7, wd, false);
   lc.setChar(0, 6, ' ', false);
-  lc.setDigit(0, 5, hour() / 10, false);
-  lc.setDigit(0, 4, hour() % 10, true);
-  lc.setDigit(0, 3, minute() / 10, false);
-  lc.setDigit(0, 2, minute() % 10, true);
-  lc.setDigit(0, 1, int(second() / 10), false);
-  lc.setDigit(0, 0, second() % 10, false);
+  lc.setDigit(0, 5, dt.hour / 10, false);
+  lc.setDigit(0, 4, dt.hour % 10, true);
+  lc.setDigit(0, 3, dt.minute / 10, false);
+  lc.setDigit(0, 2, dt.minute % 10, true);
+  lc.setDigit(0, 1, int(dt.second / 10), false);
+  lc.setDigit(0, 0, dt.second % 10, false);
 }
 
 void ShowEffect() {
@@ -95,11 +96,12 @@ void ShowEffect2() {
 
 void digitalDateDisplay() {
   ShowEffect();
-  lc.setDigit(0, 7, day() / 10, false);
-  lc.setDigit(0, 6, day() % 10, true);
-  lc.setDigit(0, 5, month() / 10, false);
-  lc.setDigit(0, 4, month() % 10, true);
-  uint16_t yy = year();
+  Datime dt(NTP);
+  lc.setDigit(0, 7, dt.day / 10, false);
+  lc.setDigit(0, 6, dt.day % 10, true);
+  lc.setDigit(0, 5, dt.month / 10, false);
+  lc.setDigit(0, 4, dt.month % 10, true);
+  uint16_t yy = dt.year;
   lc.setDigit(0, 3, yy / 1000, false);
   yy = yy % 1000;
   lc.setDigit(0, 2, yy / 100, false);
@@ -111,7 +113,7 @@ void digitalDateDisplay() {
 void digitalTempDisplay() {
   ShowEffect();
   lc.clearDisplay(0);
-  lc.setRow(0, 7, 0x0f);  // t
+  lc.setRow(0, 7, letterT);  // t
   lc.setDigit(0, 6, 0, false);   // 0
   lc.setChar(0, 5, ' ', false);
   lc.setDigit(0, 4, tem / 10, false);  
@@ -119,16 +121,15 @@ void digitalTempDisplay() {
   //uint16_t ttt = tem * 100 + 5; 
   lc.setDigit(0, 2, int((tem * 100 + 5) / 10) % 10, false);  
   lc.setRow(0, 1, 0b01100011); // gradus
-  lc.setRow(0, 0, 0b01001110); // Celsium
+  lc.setRow(0, 0, letterC); // Celsium
 }
 
 void date_handle(unsigned long DateTimeView) {
-  static unsigned long PrevDate = 0;
-  static boolean LastDate = false; //
+  static unsigned long PrevDate = 0; // текущее время показа
+  static boolean LastDate = false; // Была показана дата
 
   if (YearTime > 5) {
-    if (PrevDate + DateTimeView > millis())
-      return;
+    if (PrevDate + DateTimeView > millis()) return;
     if (YearShow) {
       if (PrevDate + DateTimeView + 1000 * YearView < millis()) {
         if (DBG) Serial.println(F("*** End show Date/temp ***"));
@@ -148,8 +149,9 @@ void date_handle(unsigned long DateTimeView) {
       } else {
         if (DBG) Serial.println(F("*** Show Date ***"));
         digitalDateDisplay();
-        if (ds_int) LastDate = true;
-        else LastDate = false; // температуру не показываем
+        // if (ds_int) 
+        LastDate = true;
+        // else LastDate = false; // температуру не показываем
       }
     }
   }
@@ -162,11 +164,10 @@ void configModeCallback() {
 
   lc.setChar(0, 7, ' ', false);
   lc.clearDisplay(0);
-  lc.setRow(0, 6, 0x5b);        // S
+  lc.setRow(0, 6, letterS);        // S
   lc.setChar(0, 5, 'E', false); // E
-  //lc.setRow(0, 5, 0x4f);        // E
-  lc.setRow(0, 4, 0x0f);        // t
-  lc.setRow(0, 3, 0x03e);       // u
+  lc.setRow(0, 4, letterT);        // t
+  lc.setRow(0, 3, letterU);       // u
   lc.setChar(0, 2, 'P', true);  // P
   lc.setChar(0, 1, ' ', true);
   lc.setChar(0, 0, ' ', true);
@@ -175,36 +176,36 @@ void configModeCallback() {
 
 //Display <StArt>
 void ShowStart() {
-  lc.setRow(0, 6, 0x5b);
-  lc.setRow(0, 5, 0x0f);
-  lc.setRow(0, 4, 0x77);
-  lc.setRow(0, 3, 0x05);
-  lc.setRow(0, 2, 0x0f);
+  lc.setRow(0, 6, letterS);
+  lc.setRow(0, 5, letterT);
+  lc.setRow(0, 4, letterA);
+  lc.setRow(0, 3, letterR);
+  lc.setRow(0, 2, letterT);
   delay(500);
 }
 
 //Display <Connect> Once Connected to AP
 void ShowConnect() {
-  lc.setRow(0, 7, 0x4e);
-  lc.setRow(0, 6, 0x7e);
-  lc.setRow(0, 5, 0x76);
-  lc.setRow(0, 4, 0x76);
-  lc.setRow(0, 3, 0x4f);
-  lc.setRow(0, 2, 0x4e);
-  lc.setRow(0, 1, 0x0f);
+  lc.setRow(0, 7, letterC);
+  lc.setRow(0, 6, letterO);
+  lc.setRow(0, 5, letterN);
+  lc.setRow(0, 4, letterN);
+  lc.setRow(0, 3, letterE);
+  lc.setRow(0, 2, letterC);
+  lc.setRow(0, 1, letterT);
   lc.setChar(0, 0, ' ', false);
   delay(300);  
 }
 
 //Display <Feeding> 
 void ShowFeeding() {
-  lc.setRow(0, 7, 0x47);
-  lc.setRow(0, 6, 0x4f);
-  lc.setRow(0, 5, 0x4f);
-  lc.setRow(0, 4, 0x3d);
-  lc.setRow(0, 3, 0x30);
-  lc.setRow(0, 2, 0x15);
-  lc.setRow(0, 1, 0x5e);
+  lc.setRow(0, 7, letterF);
+  lc.setRow(0, 6, letterE);
+  lc.setRow(0, 5, letterE);
+  lc.setRow(0, 4, letterD);
+  lc.setRow(0, 3, letterI);
+  lc.setRow(0, 2, letterN);
+  lc.setRow(0, 1, letterG);
   lc.setChar(0, 0, ' ', false);
   delay(750);  
   lc.clearDisplay(0);
@@ -216,6 +217,30 @@ void ShowFeeding() {
   delay(FeedDelay);
   digitalWrite(VibroPin, VibroUp);
   if (FeedDelay < 750) delay(750 - FeedDelay);
+}
+
+void ShowDownload() {
+  lc.setChar(0, 7, ' ', false);
+  lc.setChar(0, 6, ' ', false);
+  lc.setRow(0, 5, letterL);
+  lc.setRow(0, 4, letterO);
+  lc.setRow(0, 3, letterA);
+  lc.setRow(0, 2, letterD);
+  lc.setChar(0, 1, ' ', false);
+  lc.setChar(0, 0, ' ', false);
+  delay(750);  
+}
+
+void ShowUpload() {
+  lc.setChar(0, 7, ' ', false);
+  lc.setRow(0, 6, letterU);
+  lc.setRow(0, 5, letterP);
+  lc.setRow(0, 4, letterL);
+  lc.setRow(0, 3, letterO);
+  lc.setRow(0, 2, letterA);
+  lc.setRow(0, 1, letterD);
+  lc.setChar(0, 0, ' ', false);
+  delay(750);  
 }
 
 void IP_Show() {
@@ -256,36 +281,24 @@ void IP_Show() {
 }
 
 void time_handle() {
-  static time_t prevDisplay = 0;
-  timeStatus_t ts = timeStatus();   
-  //Serial.printf("Статус времени: %d\r\n", ts);
-  switch (ts) {
-    case timeNeedsSync:
-    case timeSet:
-      //update the display only if time has changed
-      if (now() != prevDisplay) {
-        prevDisplay = now();
-        digitalClockDisplay();
-        //tmElements_t tm;
-        //breakTime(now(), tm);
-        //If Time Needs Sync Display a "-" on second Digit
-        if (ts == timeNeedsSync) {
-          lc.setChar(0, 1, '-', false);
-        }
-      }
-      break;
-    case timeNotSet:
-      //Display <No Sync> If Time Not Displayed
-      lc.clearDisplay(0);
-      lc.setRow(0, 7, 0x15);
-      lc.setRow(0, 6, 0x1d);
-      lc.setRow(0, 4, 0x5b);
-      lc.setRow(0, 3, 0x3b);
-      lc.setRow(0, 2, 0x15);
-      lc.setRow(0, 1, 0x0d);
-      now();
-      delay(3000);
-      //ESP.restart();
+  // static time_t prevDisplay = 0;
+     
+  if (NTP.online()) {
+    //update the display only if time has changed
+    digitalClockDisplay();
+    if (DBG) Serial.println(NTP.timeToString());
+  } else {
+    //Display <No Sync> If Time Not Displayed
+    lc.clearDisplay(0);
+    lc.setRow(0, 7, letterN);
+    lc.setRow(0, 6, letterO);
+    lc.setRow(0, 4, letterS);
+    lc.setRow(0, 3, letterY);
+    lc.setRow(0, 2, letterN);
+    lc.setRow(0, 1, letterC);
+    //now();
+    delay(3000);
+    //ESP.restart();
   } 
 }
 
@@ -302,7 +315,7 @@ void night_handle(unsigned int del_int) {
     return;
   }
   if (del_night + del_int < millis()) { // Если интервал уже истек
-    time_now = hour() * 60 + minute();
+    time_now = NTP.hour() * 60 + NTP.minute();
     time_on = my_light.Night_on.hour * 60 + my_light.Night_on.minute;
     time_off = my_light.Night_off.hour * 60 + my_light.Night_off.minute;
     old_intens = led_intens;

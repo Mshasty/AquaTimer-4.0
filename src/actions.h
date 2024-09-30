@@ -231,7 +231,7 @@ void action() {
       if (portal.clickBool((String("feed_sw") + i), Feeds[i].feed_sw)) {
         // Feeds[i].feed_sw = portal.getBool((String("feed_sw") + i));
         if (DBG_portal) {
-          Serial.print(strTimeNow() + String("Кормление ") + (i + 1));
+          Serial.print(strTimeNow() + String(" Кормление ") + (i + 1));
           if (Feeds[i].feed_sw) Serial.println(" включено");
           else Serial.println(" выключено");
         }
@@ -280,23 +280,25 @@ void action() {
 
     // Кнопки
     if (portal.click("btn_feed")) {
-      if (DBG_portal) Serial.println(strTimeNow() + "Feed button click");
+      if (DBG_portal) Serial.println(strTimeNow() + " Feed button click");
       ShowFeeding();
     } 
 
     if (portal.click("load_conf")) {
       if (DBG_portal) Serial.println("Load button click");
       if (eeprom_read()) {
-        if (DBG_portal) Serial.println(strTimeNow() + "Конфигурация загружена");
+        if (DBG_portal) Serial.println(strTimeNow() + " Конфигурация загружена");
         //portal.start();
+        ShowDownload();
         portal.show();
       }
-      else Serial.println(strTimeNow() + "Ошибка загрузки конфигурации");
+      else Serial.println(strTimeNow() + " Ошибка загрузки конфигурации");
     }
 
     if (portal.click("save_conf")) {
-      if (DBG_portal) Serial.println(strTimeNow() + "Конфигурация сохранена");
+      if (DBG_portal) Serial.println(strTimeNow() + " Конфигурация сохранена");
       eeprom_write();
+      ShowUpload();
     }
     
     if (portal.click("btn")) {
@@ -308,9 +310,9 @@ void action() {
   }
 
   if (portal.update()) {
-    if (portal.update("temp")) portal.answer(String(ds_tem, 2) + "°С");
+    if (portal.update("temp")) portal.answer(String(tem, 2) + "°С");
 
-    if (portal.update("tnow")) portal.answer("  " + day_week(weekday()) + " " + lz(day()) + "." + lz(month()) + "." + lz(year()-2000) + " " + lz(hour()) + ":" + lz(minute()) );
+    if (portal.update("tnow")) portal.answer("  " + day_week(NTP.weekDay()) + " " + lz(NTP.day()) + "." + lz(NTP.month()) + "." + lz(NTP.year()-2000) + " " + lz(NTP.hour()) + ":" + lz(NTP.minute()) );
 
     if (portal.updateSub("led")) portal.answer(random(2));
     if (portal.updateSub("ldt1")) portal.answer(tempOK);

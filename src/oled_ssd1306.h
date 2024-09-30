@@ -2,6 +2,8 @@
 
 #define delaytime 1000
 
+/* Библиотека ещё не готова! */
+
 /*For ESP-01 Don't Change GPIO Values
 // GPIO0= DIN pin, GPIO1 = CLK pin, GPIO 2 = LOAD pin
 LedControl lc = LedControl(0, 1, 2, 1)

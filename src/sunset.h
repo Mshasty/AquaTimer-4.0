@@ -11,7 +11,7 @@ void daybreakIsr() {
   if (zakat_inv) analogWrite(relays[zakat_rel], 1023 - zakat_cur);
   else analogWrite(relays[zakat_rel], zakat_cur);
   if (zakat_cur >= zakat_max) {
-    Serial.println(strTimeNow() + "Рассвет окончен");
+    Serial.println(strTimeNow() + " Рассвет окончен");
     blinker.attach(60, noChangeIsr);
   }
 }
@@ -24,7 +24,7 @@ void sundownIsr() {
   else analogWrite(relays[zakat_rel], zakat_cur);
   if (zakat_cur <= zakat_min) {
     digitalWrite(relays[zakat_rel], zakat_inv);
-    Serial.println(strTimeNow() + "Закат окончен");
+    Serial.println(strTimeNow() + " Закат окончен");
     blinker.attach(60, noChangeIsr);
   }
 }

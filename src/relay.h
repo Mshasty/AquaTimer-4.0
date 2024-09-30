@@ -10,17 +10,17 @@ void relayState(uint8_t r_num, boolean state, String mess){
       if (state) {
         zakat_cur = zakat_min;
         blinker.attach(interrupt_period, daybreakIsr);
-        Serial.println(strTimeNow() + "Старт рассвета");
+        Serial.println(strTimeNow() + " Старт рассвета");
       } else {
         zakat_cur = zakat_max;
         blinker.attach(interrupt_period, sundownIsr);
-        Serial.println(strTimeNow() + "Старт заката");
+        Serial.println(strTimeNow() + " Старт заката");
       }
     } else {
       digitalWrite(relays[r_num], XOR(state, RelayUp));
     }
     ChOnOff[r_num] = state;
-    String umes = strTimeNow() + "Relay " + String(r_num+1) + " " + mess;
+    String umes = strTimeNow() + " Relay " + String(r_num+1) + " " + mess;
     if (state) umes += " is switch on";
     else  umes += " is switch off";
     Serial.println(umes);
@@ -32,7 +32,7 @@ void relay(){
   
   if(i + 1000 > millis()) return;
   i = millis();
-  tem = ds_tem;
+  // tem = ds_tem;
   
   if (tem > p_tem + ( h_tem / 2)){
     if (mode == "TEM") {
@@ -65,7 +65,8 @@ void timer_handle(unsigned int deltime) {
   unsigned int time_off;
   boolean relay_state[relay_num];
   uint8_t bitDay = 1;
-  int wd = weekday() - 1;
+  Datime dt(NTP);
+    int wd = dt.weekDay - 1;
   
   if (!wd) wd = 7;
   if (wd > 1) bitDay <<= (wd-1);
@@ -75,7 +76,7 @@ void timer_handle(unsigned int deltime) {
   }
 
   if (del_timer + deltime < millis()) { // Если интервал уже истек
-    time_now = hour() * 60 + minute();
+    time_now = dt.hour * 60 + dt.minute;
     for (uint8_t i=0; i < timers_num; i++) {
       uint8_t my_timer_week = weekday_set[my_timer[i].Timer_days];
       if (DBG_relay) {
@@ -129,7 +130,7 @@ void feed_handle(unsigned int delfeed) {
   unsigned int feeding;
 
   if (del_feeder + delfeed < millis()) { // Если интервал уже истек
-    time_now = hour() * 60 + minute();
+    time_now = NTP.hour() * 60 + NTP.minute();
     for (uint8_t i=0; i < 2; i++) {
       if (Feeds[i].feed_sw) {
         feeding = Feeds[i].feed_start.hour * 60 + Feeds[i].feed_start.minute;
@@ -150,18 +151,18 @@ void feed_handle(unsigned int delfeed) {
 void RelayZakatAfter() {
   if (zakat_sw) {
     if (ChOnOff[zakat_rel]) { 
-      Serial.println(strTimeNow() + "Возвращаем реле заката в 1");
+      Serial.println(strTimeNow() + " Возвращаем реле заката в 1");
       if (zakat_inv) {
           analogWrite(relays[zakat_rel], 1023 - zakat_max);
       } else {
         analogWrite(relays[zakat_rel], zakat_max);
       }
     } else {
-      Serial.println(strTimeNow() + "Возвращаем реле заката в 0");
+      Serial.println(strTimeNow() + " Возвращаем реле заката в 0");
       digitalWrite(relays[zakat_rel], zakat_inv);
     }
   } else {
     digitalWrite(relays[zakat_rel], XOR(ChOnOff[zakat_rel], RelayUp));
-    Serial.println(strTimeNow() + "Возвращаем реле заката в прежнюю позицию");
+    Serial.println(strTimeNow() + " Возвращаем реле заката в прежнюю позицию");
   }
 }

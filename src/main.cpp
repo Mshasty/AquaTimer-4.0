@@ -1,9 +1,5 @@
 #include <Arduino.h>
 
-
-#define AP_SSID "Bikar6"
-#define AP_PASS "htdjkzwbz1917"
-
 #include <GyverPortal.h>
 GyverPortal portal;
 
@@ -15,10 +11,15 @@ GyverPortal portal;
 #include "vars.h"       // Список переменных
 // #include "pins.h"
 #include "ds18b20.h"    // в этом файле работа с датчиком ds18b20
-#include "timing.h"
+#include "ntptime.h"
 #include "sunset.h"
 #include "relay.h"      // в этом файле работа с реле
-#include "led7seg.h"
+#ifdef disp_max7219
+  #include "led7seg.h"
+#endif
+#ifdef disp_ssd1306
+  #include "oled_ssd1306.h"
+#endif
 #include "romfunc.h"
 #include "interface.h"
 #include "actions.h"
@@ -39,7 +40,7 @@ void setup() {
   WiFi.begin(AP_SSID, AP_PASS);
   Serial.println("AP connect");
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(100);
     Serial.print(".");
   }
   if (WiFi.isConnected()) {
@@ -51,26 +52,28 @@ void setup() {
   portal.attachBuild(build);
   portal.attach(action);
   portal.start();
+  NTP.setPeriod(ntp_req * 60);
+  NTP.setHost(ntp_srv);
+  NTP.begin(GMT_OFF);
+
+  ds.requestTemp();
   if (WiFi.isConnected()) IP_Show();
 }
 
 void loop() {
   portal.tick();
-  timer_handle(time_int);
-  feed_handle(feed_int);
-  if (ds_int) ds_handle(ds_int); // цикл замера температуры ds18b20
-  night_handle(night_int);
-	if (time_setup) {
-		time_set = update_handle(ntp_req * 60);
-	} else {
-		if (DBG) Serial.println("Первичный запрос NTP");
-    time_set = update_handle(5);
-    if (time_set) {
-      time_setup = true; 
-      Serial.println(strTimeNow() + "- время получено");
-    }
-	}
-	date_handle(YearTime * 1000);
-	if (!YearShow) time_handle();
-	relay();
+  NTP.tick();
+  if (NTP.newSecond()) { // новая секунда
+  
+
+    timer_handle(time_int);
+    feed_handle(feed_int);
+    night_handle(night_int);
+    date_handle(YearTime * 1000);
+    if (!YearShow) time_handle();
+    relay();
+  }
+  // if (ds_int) 
+  //ds_handle(ds_int); // цикл замера температуры ds18b20
+  GetTemp();
 }
