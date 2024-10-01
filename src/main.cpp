@@ -14,8 +14,11 @@ GyverPortal portal;
 #include "ntptime.h"
 #include "sunset.h"
 #include "relay.h"      // в этом файле работа с реле
-#ifdef disp_max7219
+#ifdef disp_led7seg
   #include "led7seg.h"
+#endif
+#ifdef disp_max7219
+  #include "max7219.h"
 #endif
 #ifdef disp_ssd1306
   #include "oled_ssd1306.h"
@@ -29,13 +32,29 @@ void setup() {
   pins_set();
   Serial.begin(115200);
   Serial.println("\nLED start");
+#ifdef disp_led7seg
 	lc.shutdown(0, false); // Initialize LCD
 	lc.setIntensity(0, .7); // Set the brightness to a low value
 	lc.clearDisplay(0); // and clear the display
   configModeCallback();
+#else
+  disp.brightness(led_intens);
+  showPhrase(" START  ");
+  delay(300);
+  /*SegRunner run_local(&disp);
+  run_local.setText("AquaTimer 4.2");
+  run_local.start();
+  run_local.waitEnd();
+  delay(300); */
+
+#endif
   if (!eeprom_read()) set_vars_start();
   Serial.println("WiFi start");
+#ifdef disp_led7seg
   ShowConnect();
+#else
+  showPhrase("CONNECT ");
+#endif
   WiFi.mode(WIFI_STA);
   WiFi.begin(AP_SSID, AP_PASS);
   Serial.println("AP connect");
@@ -57,15 +76,19 @@ void setup() {
   NTP.begin(GMT_OFF);
 
   ds.requestTemp();
-  if (WiFi.isConnected()) IP_Show();
+  if (WiFi.isConnected()) {
+    //animPhrase("CONNECT ", 7);
+    IP_Show();
+  }
 }
 
 void loop() {
   portal.tick();
   NTP.tick();
+#ifdef disp_max7219
+  disp.tick();
+#endif
   if (NTP.newSecond()) { // новая секунда
-  
-
     timer_handle(time_int);
     feed_handle(feed_int);
     night_handle(night_int);

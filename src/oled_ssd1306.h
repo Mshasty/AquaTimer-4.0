@@ -1,7 +1,5 @@
 #include <LedControl.h>           // https://github.com/wayoda/LedControl/releases  MAX7219 7 segment driver
 
-#define delaytime 1000
-
 /* Библиотека ещё не готова! */
 
 /*For ESP-01 Don't Change GPIO Values
@@ -18,8 +16,6 @@ int inPin = 3;
 LedControl lc = LedControl(13, 14, 15, 1);
 // the GPIO number For The "Reset" Push Button Switch Pin For ESp-07 Tested
 //int inPin = 5;
-
-boolean YearShow = false;       // Идёт показ даты
 
 void digitalClockDisplay() {
   //tmElements_t tm;

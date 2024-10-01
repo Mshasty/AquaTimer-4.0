@@ -114,8 +114,12 @@ boolean eeprom_read() {
   YearTime = data.YearTime;
   YearView = data.YearView;
   led_light = data.led_light;
-  led_intens = led_light/100;
-  lc.setIntensity(0, led_intens);
+  led_intens = led_light;
+#ifdef disp_led7seg
+  lc.setIntensity(0, led_intens*10);
+#else
+  disp.brightness(led_intens);
+#endif
   led_dark = data.led_dark;
   my_light = data.my_light;
   GMT_OFF = data.gmt_off;

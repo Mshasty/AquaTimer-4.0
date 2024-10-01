@@ -82,8 +82,8 @@ void build() {
       GP_MAKE_BOX(GP.LABEL("Ночной режим:"); GP.SWITCH("night_sw", my_light.Night_sw, GP_YELLOW); );
       GP_MAKE_BOX(GP.TIME("night_on", my_light.Night_on); GP.TIME("night_off", my_light.Night_off); );
       GP.BREAK(); GP.LABEL("Яркость:");
-      GP_MAKE_BOX(GP.LABEL("Днём: "); GP.SLIDER("led_light", led_light, 10, 100, 10, 0, GP_YELLOW); );
-      GP_MAKE_BOX(GP.LABEL("Ночью:"); GP.SLIDER("led_dark", led_dark, 5, 50, 5, 0, GP_YELLOW); );
+      GP_MAKE_BOX(GP.LABEL("Днём: "); GP.SLIDER("led_light", led_light, 1, 15, 1, 0, GP_YELLOW); );
+      GP_MAKE_BOX(GP.LABEL("Ночью:"); GP.SLIDER("led_dark", led_dark, 0, 7, 1, 0, GP_YELLOW); );
     );
 
   } else if (portal.uri("/setting")) {

@@ -29,13 +29,6 @@ void action() {
       }
     }
 
-    if (portal.clickBool("night_sw", my_light.Night_sw)) {
-      if (DBG_portal) {
-        Serial.print("***Switch. Ночной режим: ");
-        Serial.println(my_light.Night_sw);
-      }
-    }
-
     // переключение режима закат/рассвет  
     if (portal.clickBool("zakat_sw", zakat_sw)) {
       if (DBG_portal) {
@@ -171,25 +164,45 @@ void action() {
       else analogWrite(relays[zakat_rel], zakat_max);
     }
 
+    if (portal.clickBool("night_sw", my_light.Night_sw)) {
+      if (DBG_portal) {
+        Serial.print("***Switch. Ночной режим: ");
+        Serial.println(my_light.Night_sw);
+      }
+    }
+
     if (portal.clickInt("led_light", led_light)) {
       if (DBG_portal) {
-        Serial.print("***Slider. Яркость LED днём, %: ");
+        Serial.print("***Slider. Яркость LED днём: ");
         Serial.println(led_light);
       }
       if (!NightMode) {
-        led_intens = led_light/100;
+        led_intens = led_light;
+#ifdef disp_led7seg
         lc.setIntensity(0, led_intens);
+#else
+        disp.brightness(led_intens);
+        Serial.print("***Slider. Дневная яркость LED: ");
+        Serial.println(led_intens);
+#endif
+
       }
     }
 
     if (portal.clickInt("led_dark", led_dark)) {
       if (DBG_portal) {
-        Serial.print("***Slider. Яркость LED ночью, %: ");
+        Serial.print("***Slider. Яркость LED ночью: ");
         Serial.println(led_dark);
       }
       if (NightMode) {
-        led_intens = led_dark/100;
+        led_intens = led_dark;
+#ifdef disp_led7seg
         lc.setIntensity(0, led_intens);
+#else
+        disp.brightness(led_intens);
+        Serial.print("***Slider. Ночная яркость LED: ");
+        Serial.println(led_intens);
+#endif
       }
     }
 

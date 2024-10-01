@@ -5,8 +5,9 @@
 #define timers_num 5 // количество таймеров
 
 //#define disp_none // дисплей отсутствует
-#define disp_max7219  // дисплей отсутствует
-//#define disp_ssd1306 // дисплей отсутствует
+//#define led7seg // 7-ми сегментный LED-индикатор
+#define disp_max7219  // 7-ми сегментный AlexGyver LED
+//#define disp_ssd1306 // OLED ssd1306 128*64
 
 #define AP_SSID "Bikar6"
 #define AP_PASS "htdjkzwbz1917"
@@ -64,7 +65,7 @@ int YearTime=12; // Период показа даты
 int YearView=5;  // Время показа даты
 int led_light = 70; // яркость индикатора в процентах днём
 int led_dark = 5; // яркость LED-индикатора ночью
-float led_intens; // яркость 7-сегм.индикатора
+int led_intens = 1; // яркость 7-сегм.индикатора
 Light_set my_light; // Структура перехода в ночной режим
 // boolean mqtt_enable = false;
 boolean ntp_setup=false; // статус NTP сеанса
@@ -79,25 +80,30 @@ int valSelect; // Выбор режима 1-го реле
 boolean eff_clock=true; // показ эффекта перед часами
 int eff_speed = 15; // скорость эффекта перед часами
 
-byte letterA = 0x77;
-byte letterB = 0x7F;
-byte letterC = 0x4E;
-byte letterD = 0x3d;
-byte letterE = 0x4F;
-byte letterF = 0x47;
-byte letterG = 0x5e;
-byte letterH = 0x37;
-byte letterI = 0x30;
-byte letterJ = 0x38;
-byte letterL = 0x0E;
-byte letterN = 0x76;
-byte letterO = 0x7E;
-byte letterP = 0x67;
-byte letterR = 0x05;
-byte letterS = 0x5b;
-byte letterT = 0x0f;
-byte letterU = 0x3e;
-byte letterY = 0x3b;
+#define delaytime 1000 // стандартная задержка 1 сек
+boolean YearShow = false;       // Идёт показ даты
+
+#ifdef disp_led7seg
+  byte letterA = 0x77;
+  byte letterB = 0x7F;
+  byte letterC = 0x4E;
+  byte letterD = 0x3d;
+  byte letterE = 0x4F;
+  byte letterF = 0x47;
+  byte letterG = 0x5e;
+  byte letterH = 0x37;
+  byte letterI = 0x30;
+  byte letterJ = 0x38;
+  byte letterL = 0x0E;
+  byte letterN = 0x76;
+  byte letterO = 0x7E;
+  byte letterP = 0x67;
+  byte letterR = 0x05;
+  byte letterS = 0x5b;
+  byte letterT = 0x0f;
+  byte letterU = 0x3e;
+  byte letterY = 0x3b;
+#endif
 
 void set_vars_start() {
   int Timer_start_hour[10] = {9, 16, 11, 15, 12, 17, 13, 10, 20, 14};
