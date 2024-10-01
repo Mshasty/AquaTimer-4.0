@@ -17,7 +17,7 @@ LedControl lc = LedControl(13, 14, 15, 1);
 // the GPIO number For The "Reset" Push Button Switch Pin For ESp-07 Tested
 //int inPin = 5;
 
-boolean YearShow = false;       // Идёт показ даты
+YearShow =boolean false;       // Идёт показ даты
 
 void digitalClockDisplay() {
   //tmElements_t tm;
