@@ -17,7 +17,7 @@ void showPhrase(String Phrase) {
   disp.setCursor(0);
   disp.print(Phrase);
   disp.update();
-  if (DBG) Serial.println(Phrase);
+  if (DBG) Serial.println("[DBG] " + Phrase);
 }
 
 void animPhrase(String Phrase, int animNum = 5) {
@@ -60,6 +60,21 @@ void animPhrase(String Phrase, int animNum = 5) {
   disp.delay(100);
 }
 
+void configModeCallback() { 
+  disp.brightness(led_intens);
+  showPhrase(" START  ");
+  delay(300);
+  /*SegRunner run_local(&disp);
+  run_local.setText("AquaTimer 4.2");
+  run_local.start();
+  run_local.waitEnd();
+  delay(300); */
+}
+
+void ShowConnect() {
+  showPhrase("CONNECT ");
+}
+
 String stringClockDisplay() {
   mString<50> strClock;
   Datime dt(NTP);
@@ -73,7 +88,7 @@ void digitalClockDisplay() {
   disp.setCursor(0);
   disp.print(stringClockDisplay());
   disp.update();
-  if (DBG) Serial.println(stringClockDisplay());
+  if (DBG) Serial.println("[DBG] " + stringClockDisplay());
 }
 
 void digitalDateDisplay() {
@@ -86,7 +101,7 @@ void animateDateDisplay() {
   //animPhrase(NTP.dateToString(), animNum);
   animPhrase(stringClockDisplay(), animNum);
   if (DBG) {
-    Serial.print("Animated date with ");
+    Serial.print("[DBG] Animated date with ");
     Serial.println(animNum);
   }
 }
@@ -102,7 +117,7 @@ void digitalTempDisplay() {
   //disp.print(strTemp.buf);
   disp.print("t=");
   disp.print(tem);
-  disp.print("*C");
+  disp.print("*C ");
   disp.update();
   //Serial.println(strTemp.buf);
 }
@@ -191,7 +206,7 @@ void date_handle(unsigned long DateTimeView) {
       if (LastDate) {
         if (DBG) {
           Serial.println(F("*** Show temp ***"));
-          Serial.printf("Текущая температура: %.2f°C\r\n", tem);
+          Serial.printf("[DBG] Текущая температура: %.2f°C\r\n", tem);
         }
         digitalTempDisplay();
         LastDate = false;
@@ -212,7 +227,7 @@ void time_handle() {
   if (NTP.online()) {
     //update the display only if time has changed
     digitalClockDisplay();
-    if (DBG) Serial.println(NTP.timeToString());
+    if (DBG) Serial.println("[DBG] " + NTP.timeToString());
   } else {
     //Display <No Sync> If Time Not Displayed
     showPhrase(" NOSYNC ");
@@ -251,7 +266,7 @@ void night_handle(unsigned int del_int) {
 #else
       disp.brightness(led_intens);
 #endif
-      if (DBG) Serial.println("Смена режима день/ночь");
+      if (DBG) Serial.println("[DBG] Смена режима день/ночь");
     }
     del_night = millis();
   }

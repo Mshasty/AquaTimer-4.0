@@ -156,7 +156,9 @@ void date_handle(unsigned long DateTimeView) {
 //To Display <Setup> if not connected to AP
 //void configModeCallback (WiFiManager *myWiFiManager) {
 void configModeCallback() {  
- 	//lc.shutdown(0, false);
+	lc.shutdown(0, false); // Initialize LCD
+	lc.setIntensity(0, .7); // Set the brightness to a low value
+	lc.clearDisplay(0); // and clear the display
 
   lc.setChar(0, 7, ' ', false);
   lc.clearDisplay(0);

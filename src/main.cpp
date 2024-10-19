@@ -11,7 +11,7 @@ GyverPortal portal;
 #include "vars.h"       // Список переменных
 // #include "pins.h"
 #include "ds18b20.h"    // в этом файле работа с датчиком ds18b20
-#include "ntptime.h"
+#include "ntptime.h"    // время и его обновление по NTP
 #include "sunset.h"
 #include "relay.h"      // в этом файле работа с реле
 #ifdef disp_led7seg
@@ -32,29 +32,10 @@ void setup() {
   pins_set();
   Serial.begin(115200);
   Serial.println("\nLED start");
-#ifdef disp_led7seg
-	lc.shutdown(0, false); // Initialize LCD
-	lc.setIntensity(0, .7); // Set the brightness to a low value
-	lc.clearDisplay(0); // and clear the display
   configModeCallback();
-#else
-  disp.brightness(led_intens);
-  showPhrase(" START  ");
-  delay(300);
-  /*SegRunner run_local(&disp);
-  run_local.setText("AquaTimer 4.2");
-  run_local.start();
-  run_local.waitEnd();
-  delay(300); */
-
-#endif
   if (!eeprom_read()) set_vars_start();
   Serial.println("WiFi start");
-#ifdef disp_led7seg
   ShowConnect();
-#else
-  showPhrase("CONNECT ");
-#endif
   WiFi.mode(WIFI_STA);
   WiFi.begin(AP_SSID, AP_PASS);
   Serial.println("AP connect");
@@ -80,6 +61,8 @@ void setup() {
     //animPhrase("CONNECT ", 7);
     IP_Show();
   }
+  GetTemp();
+  if (tem) isDS18 = true;
 }
 
 void loop() {
@@ -96,7 +79,7 @@ void loop() {
     if (!YearShow) time_handle();
     relay();
   }
-  // if (ds_int) 
-  //ds_handle(ds_int); // цикл замера температуры ds18b20
-  GetTemp();
+  if (isDS18) ds_handle(ds_int); // цикл замера температуры ds18b20
+  else if (DBG) Serial.println("[DBG] Датчик температуры не найден");
+  // GetTemp();
 }

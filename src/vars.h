@@ -57,6 +57,7 @@ float zakat_int = 1; // период обращения к прерыванию 
 float tem; // тут храним температуру
 int p_tem=26; // температура включения реле
 int h_tem=1; // гистерезис
+boolean isDS18 = false;
 String mode = "TMR"; // режим работы по температуре/ручной (TEM/MAN/TMR)
 char ntp_srv[30] = "ntp.msk-ix.ru";
 int GMT_OFF=3; // Тайм-зона

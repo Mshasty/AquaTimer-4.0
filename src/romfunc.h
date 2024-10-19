@@ -69,7 +69,7 @@ void eeprom_write() {
   for (uint8_t i = 0; i < timers_num; i++) data.my_timer[i] = my_timer[i];
 
   if (DBG) {
-    Serial.print("Размер используемого EEPROM ");
+    Serial.print("[DBG] Размер используемого EEPROM ");
     Serial.print(sizeof(data));
     Serial.println(" байт");
   }
@@ -86,7 +86,7 @@ boolean eeprom_read() {
   // char my_ntp_srv[30];
 
   if (DBG) {
-    Serial.print("Размер используемого EEPROM ");
+    Serial.print("[DBG] Размер используемого EEPROM ");
     Serial.print(sizeof(data));
     Serial.println(" байт");
   }
@@ -96,7 +96,7 @@ boolean eeprom_read() {
   EEPROM.get(0, data);
 
   if (DBG) {
-    Serial.print("Контроль данных (0xA5): ");
+    Serial.print("[DBG] Контроль данных (0xA5): ");
     Serial.println(data.success);
   }
   if (data.success != 0xA5) return false;
@@ -143,7 +143,7 @@ boolean eeprom_read() {
     //if(data.ntp_srv[j]==0) break;
   }
   if (DBG) {
-    Serial.print("Полученный адрес NTP-сервера  ");
+    Serial.print("[DBG] Полученный адрес NTP-сервера  ");
     Serial.println(ntp_srv);
   }
   for (uint8_t i = 0; i < 2; i++) Feeds[i] = data.feeds[i];

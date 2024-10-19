@@ -65,26 +65,29 @@ void timer_handle(unsigned int deltime) {
   unsigned int time_off;
   boolean relay_state[relay_num];
   uint8_t bitDay = 1;
-  Datime dt(NTP);
-  int wd = dt.weekDay;
   
-  if (wd > 1) bitDay <<= (wd-1);
-
-  for (uint8_t i=0; i < relay_num; i++) { // инициализируем статусы
-    relay_state[i] = false;
-  }
 
   if (del_timer + deltime < millis()) { // Если интервал уже истек
+    Datime dt(NTP);
+    int wd = dt.weekDay;
+    if (wd > 1) bitDay <<= (wd-1);
     time_now = dt.hour * 60 + dt.minute;
+    if (DBG_relay) {
+      Serial.print("[DBG] Биты текущего дня: ");
+      Serial.println(bitDay);
+    }
+    for (uint8_t i=0; i < relay_num; i++) { // инициализируем статусы
+      relay_state[i] = false;
+    }
     for (uint8_t i=0; i < timers_num; i++) {
       uint8_t my_timer_week = weekday_set[my_timer[i].Timer_days];
       if (DBG_relay) {
-        String strDays = "Для таймера " + String(i+1) + " биты дней: " + String(my_timer_week, HEX) + ", а реле: " + String(my_timer[i].Timer_relay + 1); 
+        String strDays = "[DBG] Для таймера " + String(i+1) + " биты дней: " + String(my_timer_week, HEX) + ", а реле: " + String(my_timer[i].Timer_relay + 1); 
         Serial.println(strDays);
       }
       if (my_timer_week & bitDay) {
         if (DBG_relay) {
-          Serial.print("Проходной бит дня таймера ");
+          Serial.print("[DBG] Проходной бит дня таймера ");
           Serial.print(String(i+1) + " равен 0x");
           Serial.println((my_timer[i].Timer_week & bitDay), HEX);
         }
@@ -101,7 +104,7 @@ void timer_handle(unsigned int deltime) {
       } 
     }
     if (DBG_relay) {
-      String strState = "";
+      String strState = "[DBG] ";
       for (uint8_t i=0; i < relay_num; i++)
         strState += String(relay_state[i]) + ", ";
       strState += "статусы по таймерам";

@@ -17,7 +17,7 @@ void build() {
   s += "temp,ldt1,ldt2,tnow,timenow";
   GP.UPDATE(s);
   if (DBG) {
-    Serial.print("Строка обновления: ");
+    Serial.print("[DBG] Строка обновления: ");
     Serial.println(s);
   }
 

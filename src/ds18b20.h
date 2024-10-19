@@ -6,7 +6,7 @@ void GetTemp() {
     if (ds.readTemp()) {  // если чтение успешно
       tem = ds.getTemp();
       if (DBG) {
-        Serial.print("temp: ");
+        Serial.print("[DBG] Temperature: ");
         Serial.print(tem);
         Serial.println("°C");
       }
@@ -15,4 +15,15 @@ void GetTemp() {
     }
     ds.requestTemp();
   }
+}
+
+void ds_handle(int ds_interval) {
+  static unsigned long PrevDStime = 0;
+
+  if (PrevDStime + ds_interval * 1000 < millis()) return;
+  PrevDStime = millis();
+  GetTemp();
+  Serial.print("[DBG] Текущая температура: ");
+  Serial.print(tem);
+  Serial.println("°C");
 }
